@@ -1,13 +1,9 @@
-package tcg.frontend.modelo
+package tcg.frontend.application.user.dto
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class User(
+data class UserDTO(
     val id: Int,
     val name: String,
     val username: String,
-    val password: String,
     val email: String,
     val money: Float,
     val address: String,
