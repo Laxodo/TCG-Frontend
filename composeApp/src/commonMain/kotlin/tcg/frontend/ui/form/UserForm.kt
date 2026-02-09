@@ -1,0 +1,125 @@
+package tcg.frontend.ui.form
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import tcg.frontend.ui.RegisterViewModel
+
+@Composable
+class UserForm(
+    registerViewModel: RegisterViewModel,
+    onClose: () -> Unit,
+    onConfirm: (datos: UserFormState) -> Unit = {},
+) {
+    val state by userFormularyViewModel.uiState.collectAsState()
+
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(16.dp).defaultMinSize(minHeigh = 200.dp),
+        tonalElevation = 4.dp,
+        shape = RoundedCornerShape(16.dp),
+        color = MatherialTheme.colorScheme.surface
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp).verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(40.dp)
+                )
+                Text(
+                    text = if(selected == null)
+                        "Crear un nuevo usuario"
+                    else
+                        "Editar usuario",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = state.name,
+                label = { Text("Nombre Completo") },
+                leadingIcon = { Icon(Icons.Default.PersonOutline, contentDescription = null) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = state.email,
+                onValueChange = { userFormularyViewModel.onEmailChange(it) },
+                label = { Text("Correo electrónico") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                isError = state.emailError != null,
+                modifier = Modifier.fillMaxWidth()
+            )
+            state.emailError?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            OutlinedTextField(
+                value = state.username,
+                label = { Text("Nombre de usuario") },
+                leadingIcon = { Icon(Icons.Default.PersonOutline, contentDescription = null) },
+                isError = state.usernameError != null,
+                modifier = Modifier.fillMaxWidth()
+            ) state.usernameError?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            if (selected.value == null) {
+                OutlinedTextField(
+                    value = state.passwrod,
+                    onValueChange = { userFormularyViewModel.onPasswordChange(it) },
+                    label = { Text("Contraseña") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                contentDescription = "Ver contraseña"
+                            )
+                        }
+                    },
+                    isError = state.passwordError != null
+                )
+                state.passwordError?.let {
+                    Text(
+                        it,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        }
+    }
+}
