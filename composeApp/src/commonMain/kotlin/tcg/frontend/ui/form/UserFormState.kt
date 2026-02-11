@@ -2,7 +2,7 @@ package tcg.frontend.ui.form
 
 data class UserFormState (
     val id: Int = 1,
-    val nombre: String = "",
+    val name: String = "",
     val username: String = "",
     val password: String = "",
     val email: String = "",
