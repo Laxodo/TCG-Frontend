@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    kotlin("plugin.serialization") version "2.1.0"
 }
 
 kotlin {
@@ -34,6 +35,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            //ktor
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -44,6 +47,25 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            // Koin
+            implementation("io.insert-koin:koin-compose:4.1.1")
+            implementation("io.insert-koin:koin-compose-viewmodel:4.1.1")
+            implementation("io.insert-koin:koin-compose-viewmodel-navigation:4.1.1")
+
+            // Ktor
+            implementation(libs.ktor.client.core)
+            implementation("io.ktor:ktor-client-content-negotiation:3.3.0")
+            implementation("io.ktor:ktor-server-cors:3.3.0")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.0")
+
+            // Iconos
+            implementation(compose.material)
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
+
+            // Tamaño de pantalla
+            implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -51,6 +73,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.ktor.client.okhttp)
         }
     }
 }
