@@ -49,9 +49,9 @@ fun UserForm(
     RegisterViewModel: RegisterViewModel,
     onClose: () -> Unit,
     onRegisterClick: () -> Unit,
-    onConfirm: (datos: UserFormState) -> Unit = {},
-    userFormularioViewModel: UserFormViewModel = viewModel {
-        UserFormViewModel(
+    onConfirm: (datos: RegisterState) -> Unit = {},
+    userFormularioViewModel: RegisterFormViewModel = viewModel {
+        RegisterFormViewModel(
             RegisterViewModel.selected.value, onConfirm
         )
     }

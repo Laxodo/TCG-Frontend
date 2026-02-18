@@ -1,7 +1,10 @@
 package tcg.frontend.modelo
 
+import tcg.frontend.application.Dto.RegisterDto
+import tcg.frontend.application.user.command.RegisterCommand
+
 interface IUserRepository {
-    suspend fun add(item: User): Unit
+    suspend fun register(registerCommand: RegisterCommand): Result<RegisterDto>
     suspend fun update(item: User): Boolean
     suspend fun remove(item: User): Boolean
     suspend fun remove(id: String): Boolean

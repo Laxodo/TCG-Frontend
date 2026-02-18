@@ -10,7 +10,7 @@ import tcg.frontend.application.user.RegisterUseCase
 import tcg.frontend.application.user.command.RegisterCommand
 import tcg.frontend.application.user.dto.UserDTO
 import tcg.frontend.modelo.IUserRepository
-import tcg.frontend.ui.form.UserFormState
+import tcg.frontend.ui.form.RegisterState
 
 class RegisterViewModel(
     private val UserRepository: IUserRepository
@@ -31,7 +31,7 @@ class RegisterViewModel(
         }
     }
 
-    fun add(formstate: UserFormState) {
+    fun add(formstate: RegisterState) {
         val command = RegisterCommand(
             formstate.name,
             formstate.username,
@@ -49,15 +49,15 @@ class RegisterViewModel(
     }
 
     /*fun update(formState: UserFormState) {
-        val command = UpdateUserCommand()
-    }
+        val command = UpdateUserCommand(
 
-    fun save(item: UserFormState) {
+        )
+    }*/
+
+    fun save(item: RegisterState) {
         if(_selected.value == null)
             this.add(item)
-        else {
-            this.update(item)
-        }
+
     }
-    */
+
 }

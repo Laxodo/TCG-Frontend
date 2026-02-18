@@ -7,18 +7,7 @@ import tcg.frontend.modelo.User
 import tcg.frontend.modelo.IUserRepository
 
 class RegisterUseCase(private val repository: IUserRepository) {
-    suspend fun invoke(command: RegisterCommand): UserDTO {
-        val item = User(
-            id =  0,
-            name = command.name,
-            password = command.password,
-            username = command.username,
-            email = command.email,
-            money = 0.0f,
-            address = "",
-            exchanges = 0
-        )
-        repository.add(item)
-        return item.toDTO()
+    suspend operator fun invoke(registerCommand: RegisterCommand): Result<RegisterDto> {
+        return repository.register(registerCommand)
     }
 }
