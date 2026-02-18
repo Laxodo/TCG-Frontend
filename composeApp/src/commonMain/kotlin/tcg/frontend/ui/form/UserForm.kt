@@ -20,9 +20,11 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,6 +48,7 @@ fun UserForm(
     //appViewModel: AppViewModel,
     RegisterViewModel: RegisterViewModel,
     onClose: () -> Unit,
+    onRegisterClick: () -> Unit,
     onConfirm: (datos: UserFormState) -> Unit = {},
     userFormularioViewModel: UserFormViewModel = viewModel {
         UserFormViewModel(
@@ -151,6 +154,28 @@ fun UserForm(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.error
                     )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = onClose,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Cancelar")
+                    }
+                    Button(
+                       onClick = {
+                           onRegisterClick()
+                       },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Registrar")
+                    }
                 }
             }
         }

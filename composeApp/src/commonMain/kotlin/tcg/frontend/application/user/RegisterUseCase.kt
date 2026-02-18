@@ -7,7 +7,7 @@ import tcg.frontend.modelo.User
 import tcg.frontend.modelo.IUserRepository
 
 class RegisterUseCase(private val repository: IUserRepository) {
-    suspend operator fun invoke(command: RegisterCommand): UserDTO {
+    suspend fun invoke(command: RegisterCommand): UserDTO {
         val item = User(
             id =  0,
             name = command.name,

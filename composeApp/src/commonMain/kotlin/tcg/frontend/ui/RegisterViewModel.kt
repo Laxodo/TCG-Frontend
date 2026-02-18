@@ -40,7 +40,7 @@ class RegisterViewModel(
         )
         viewModelScope.launch {
             try {
-                val user = RegisterUseCase.invoke(command)
+                val user = registerUseCase.invoke(command)
                 _items.value = (_items.value + user) as MutableList<UserDTO>
             } catch (e: Exception) {
                 throw e
