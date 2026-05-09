@@ -10,9 +10,10 @@ import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import tcg.frontend.aplicacion.login.LoginCommand
 import tcg.frontend.dominio.IUserRepository
+import tcg.frontend.infraestructura.entities.LoginResponse
 
 class UserRepository(private val url: String, private val _client: HttpClient) : IUserRepository {
-    override suspend fun login(loginCommand: LoginCommand): Result<Boolean> {
+    override suspend fun login(loginCommand: LoginCommand): Result<LoginResponse> {
         return runCatching {
             val request = this._client.post("$url/users/login") {
                 contentType(ContentType.Application.FormUrlEncoded)
@@ -24,10 +25,9 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
 
             if(request.status.value !in 200..<300)
                 throw Exception("${request.status.value}-${request.status.description}")
-//
-//            val item = request.body<LoginResponse>()
-//            item.access_token
-            true
+
+            val item = request.body<LoginResponse>()
+            item
         }
     }
 }

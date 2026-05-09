@@ -1,7 +1,8 @@
 package tcg.frontend.dominio
 
 import tcg.frontend.aplicacion.login.LoginCommand
+import tcg.frontend.infraestructura.entities.LoginResponse
 
 interface IUserRepository {
-    suspend fun login(loginCommand: LoginCommand): Result<Boolean>
+    suspend fun login(loginCommand: LoginCommand): Result<LoginResponse>
 }

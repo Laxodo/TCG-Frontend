@@ -53,7 +53,6 @@ class LoginViewModel(
                     _uiState.value = _uiState.value.copy(isLoginSuccess = true)
                     println("Access token: $it")
                     _uiState.update { it.copy(isLoading = false, isLoginSuccess = true) }
-
                 }.onFailure {
                     _uiState.update { it.copy(isLoading = false, isLoginSuccess = false) }
                     val error = it.message

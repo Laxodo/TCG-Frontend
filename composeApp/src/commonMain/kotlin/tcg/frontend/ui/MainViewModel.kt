@@ -1,20 +1,21 @@
 package tcg.frontend.ui
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import tcg.frontend.aplicacion.UserSessionManager
 
-data class ItemOption(
-    val icon: ImageVector,
-    val action:()->Unit,
-    val name:String
-)
 
-class MainViewModel(): ViewModel() {
-    private val _options= MutableStateFlow<List<ItemOption>>(emptyList())
-    val options = _options
+class MainViewModel(private val sessionManager: UserSessionManager): ViewModel() {
+    val currentUserState = sessionManager.currentUser
 
-    fun setOptions(options:List<ItemOption>){
-        _options.value = options.toList()
+    init {
+        viewModelScope.launch {
+            sessionManager.session()
+        }
+    }
+
+    fun logout(){
+        sessionManager.logout()
     }
 }

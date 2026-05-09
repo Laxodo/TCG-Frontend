@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    kotlin("plugin.serialization") version "2.1.0"
+    kotlin("plugin.serialization") version "2.2.21"
 }
 
 kotlin {
@@ -19,7 +19,7 @@ kotlin {
     }
     
     jvm()
-    
+
     js {
         browser()
         binaries.executable()
@@ -66,6 +66,9 @@ kotlin {
 
             // Tamaño de pantalla
             implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
+
+            // Administracion de token
+            implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

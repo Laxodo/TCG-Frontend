@@ -1,147 +1,42 @@
 package tcg.frontend.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Category
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.PermanentDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.window.core.layout.WindowWidthSizeClass
 import org.koin.compose.viewmodel.koinViewModel
 import tcg.frontend.Routes
+import tcg.frontend.ui.administracion.AdminMain
 import tcg.frontend.ui.login.Login
-import tcg.frontend.ui.login.LoginViewModel
+import tcg.frontend.ui.usuario.UserMain
 
 @Composable
 fun Main() {
     val mainViewModel: MainViewModel = koinViewModel()
-    val loginViewModel: LoginViewModel = koinViewModel()
     val navController = rememberNavController()
+    val user = mainViewModel.currentUserState.collectAsState()
 
-    val options by mainViewModel.options.collectAsState()
-    val window = currentWindowAdaptiveInfo()
+    NavHost(
+        navController = navController,
+        startDestination = if (user.value != null) Routes.ACCESS else Routes.LOGIN
+    ){
+        composable(Routes.LOGIN) {
+            Login({
+                    TODO("Wait to register form")
+            })
+        }
 
-    mainViewModel.setOptions(
-        listOf(
-            ItemOption(
-                Icons.Default.Category, {
-                    navController.navigate(Routes.LOGIN) {
-                        launchSingleTop = true
-                    }
-                },
-                ""
-            )
-        )
-    )
-
-    val navegador: @Composable () -> Unit = {
-        NavHost(
-            navController = navController,
-            startDestination = Routes.LOGIN
-        ){
-            composable(Routes.LOGIN) {
-                Login(loginViewModel)
+        composable(Routes.ACCESS){
+            if(user.value?.isAdmin ?: false){
+                AdminMain({
+                        mainViewModel.logout()
+                })
+            }else{
+                UserMain({
+                    mainViewModel.logout()
+                })
             }
         }
-    }
-
-    if (window.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
-        Scaffold(
-            bottomBar = {
-                NavigationBar {
-                    mainViewModel.options.collectAsState().value.forEach { item ->
-                        NavigationBarItem(
-                            selected = true,
-                            onClick = { item.action() },
-                            icon = { Icon(item.icon, contentDescription = item.name) },
-                        )
-                    }
-                }
-            }
-        ) { innerPadding ->
-            Box(Modifier.padding(innerPadding)) {
-                navegador()
-            }
-        }
-    } else {
-        PermanentNavigationDrawer(
-            drawerContent = {
-                PermanentDrawerSheet(
-                    Modifier.then(
-                        if (window.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT)
-                            Modifier.width(128.dp)
-                        else Modifier.width(128.dp)
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight()
-                            .padding(vertical = 16.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(Modifier.height(16.dp))
-                        options.forEach { item ->
-                            NavigationDrawerItem(
-                                icon = {
-                                    Box(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        contentAlignment = Alignment.Center,
-
-                                        ) {
-                                        Icon(
-                                            item.icon,
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            contentDescription = item.name
-                                        )
-                                    }
-                                },
-                                label = { window.windowSizeClass.toString() },
-                                selected = false,
-                                onClick = { item.action() },
-                                modifier = Modifier
-                                    .padding(vertical = 4.dp)
-
-                            )
-                        }
-                    }
-                }
-            },
-            content = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                        .height(600.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    navegador()
-                }
-            }
-        )
     }
 }

@@ -8,22 +8,12 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Autorenew
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Password
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonOutline
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -37,14 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.MutableStateFlow
-import tcg.frontend.ui.ItemOption
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun Login(
-    loginViewModel: LoginViewModel
+    onRegister: () -> Unit
 ) {
-
+    val loginViewModel: LoginViewModel = koinViewModel()
     val state by loginViewModel.uiState.collectAsState()
     val id by loginViewModel.id.collectAsState()
 
@@ -135,11 +124,11 @@ fun Login(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     OutlinedButton(
-                        onClick = {  },
+                        onClick = { onRegister() },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Cancelar")
+                        Text("Registrarse")
                     }
                     Button(
                         onClick = { loginViewModel.login() },
