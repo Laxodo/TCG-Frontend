@@ -4,12 +4,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.UserSession
 import tcg.frontend.infraestructura.TokenJwt
 import tcg.frontend.infraestructura.TokenStorage
 
-class UserSessionManager(private val tokenStorage: TokenStorage, private val repository: IUserRepository) {
+class UserSessionManager(private val tokenStorage: TokenStorage) {
 
     private val _currentUser = MutableStateFlow<UserSession?>(null)
     val currentUser: StateFlow<UserSession?> = _currentUser.asStateFlow()

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -26,13 +27,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
+import io.ktor.server.routing.Route
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import tcg.frontend.Routes
+import tcg.frontend.ui.administracion.users.UserViewModel
+import tcg.frontend.ui.administracion.users.Users
+import tcg.frontend.ui.administracion.users.form.UserForm
+import tcg.frontend.ui.administracion.users.form.UserFormViewModel
 
 @Composable
 fun AdminMain(
@@ -44,8 +52,18 @@ fun AdminMain(
     val options by adminMainViewModel.options.collectAsState()
     val window = currentWindowAdaptiveInfo()
 
+    val userViewModel: UserViewModel = koinViewModel()
+
     adminMainViewModel.setOptions(
         listOf(
+            ItemOption(
+                Icons.Default.Person, {
+                    navController.navigate(Routes.USERS){
+                        launchSingleTop = true
+                    }
+                },
+                "Usuarios"
+            ),
             ItemOption(
                 Icons.Default.Logout, {
                     onLogout()
@@ -63,6 +81,42 @@ fun AdminMain(
             composable(Routes.ACCESS){
                 Access()
             }
+
+            composable(Routes.USERS){
+                userViewModel.refresh()
+                Users(
+                    userViewModel,
+                    {
+                        userViewModel.setSelectedUser(it)
+                        userViewModel.editMode = true
+                        navController.navigate(Routes.USER){
+                            launchSingleTop = true
+                        }
+                    },{
+                        userViewModel.setSelectedUser(it)
+                        userViewModel.editMode = false
+                        navController.navigate(Routes.USER){
+                            launchSingleTop = true
+                        }
+                    },
+                    {
+                        userViewModel.deleteUser(it)
+                    }
+                )
+            }
+
+            composable(Routes.USER){
+                val userFormViewModel: UserFormViewModel = koinViewModel<UserFormViewModel>{
+                    parametersOf(userViewModel.selected.value, {})
+                }
+                UserForm(userViewModel, userFormViewModel,
+                    {
+                        navController.popBackStack()
+                    },
+                    {}
+                )
+            }
+
         }
     }
 

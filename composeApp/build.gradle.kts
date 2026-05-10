@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -58,6 +59,8 @@ kotlin {
             implementation("io.ktor:ktor-client-content-negotiation:3.3.0")
             implementation("io.ktor:ktor-server-cors:3.3.0")
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.0")
+            implementation("io.ktor:ktor-client-logging:3.3.0")
+            implementation("io.ktor:ktor-client-auth:3.3.0")
 
             // Iconos
             implementation(compose.material)

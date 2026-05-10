@@ -1,15 +1,15 @@
-package tcg.frontend.dominio
+package tcg.frontend.infraestructura.entities
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class User(
-    val id: Int,
+data class GetUserResponse(
+    val id: Long,
     val name: String,
     val username: String,
     val email: String,
     val money: Float,
-    val openBoosted: Int,
+    val opened_boosters: Int,
     val exchanges: Int,
-    val isAdmin: Boolean
+    val is_admin: Boolean
 )
