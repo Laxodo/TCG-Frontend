@@ -10,11 +10,17 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
-import kotlinx.serialization.internal.throwMissingFieldException
-import tcg.frontend.aplicacion.delete.DeleteUserCommand
+import tcg.frontend.aplicacion.usuarios.delete.DeleteUserCommand
 import tcg.frontend.aplicacion.login.LoginCommand
+import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionCommand
+import tcg.frontend.aplicacion.usercard.listCollection.UserCardCollectionDTO
+import tcg.frontend.aplicacion.usercard.listar.ListUserCardCommand
+import tcg.frontend.dominio.Card
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
+import tcg.frontend.dominio.UserCard
+import tcg.frontend.infraestructura.entities.GetUserCardResponse
+import tcg.frontend.infraestructura.entities.GetUserCollectionResponse
 import tcg.frontend.infraestructura.entities.GetUserResponse
 import tcg.frontend.infraestructura.entities.LoginResponse
 import kotlin.runCatching
@@ -71,6 +77,72 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
             }else
                 throw Exception("${request.status.value}-${request.status.description}")
 
+        }
+    }
+
+    override suspend fun getUserCards(listUserCardCommand: ListUserCardCommand): Result<Map<Card, List<UserCard>>> {
+        return runCatching {
+            val request = this._client.get(
+                "$url/users/${listUserCardCommand.idUser}/inventory" +
+                    "?expansion=${listUserCardCommand.idExpansion}" +
+                    "&limit=${listUserCardCommand.limit}" +
+                    "&offset=${listUserCardCommand.offset}"
+            )
+
+            val item = request.body<List<GetUserCardResponse>>()
+
+            if(request.status.value !in 200..<300)
+                throw Exception("${request.status.value}-${request.status.description}")
+
+            item.map { it ->
+                val card = Card(
+                    id = it.card.id,
+                    idExpansion = it.card.id_expansion,
+                    name = it.card.name,
+                    rarity = it.card.rarity,
+                    price = it.card.price,
+                    cardNumber = it.card.card_number,
+                    frontcard = it.card.frontcard,
+                    backcard = it.card.backcard
+                )
+                val userCards = it.user_cards.map { it->
+                    UserCard(
+                        id = it.id,
+                        idUser = it.id_user,
+                        idCard = it.id_card,
+                        price = it.price,
+                        psa = it.psa,
+                        sold = it.sold
+                    )
+                }
+                card to userCards
+            }.toMap()
+        }
+    }
+
+    override suspend fun getUserCollection(listUserCardCollectionCommand: ListUserCardCollectionCommand): Result<List<UserCardCollectionDTO>> {
+        return runCatching {
+            val request = this._client.get(
+                "$url/users/${listUserCardCollectionCommand.idUser}/collection" +
+                        "?expansion=${listUserCardCollectionCommand.idExpansion}"
+            )
+
+            val responseString = request.body<String>()
+            println("JSON REAL RECIBIDO: $responseString")
+            val item = request.body<List<GetUserCollectionResponse>>()
+
+            if(request.status.value !in 200..<300)
+                throw Exception("${request.status.value}-${request.status.description}")
+
+            item.map { it ->
+                UserCardCollectionDTO(
+                    idCard = it.id_card,
+                    cardNumber = it.card_number,
+                    cardName = it.card_name,
+                    quantity = it.quantity,
+                    frontcard = it.frontcard
+                )
+            }
         }
     }
 }

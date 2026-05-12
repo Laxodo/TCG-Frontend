@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserSession(
-    val id: Long,
+    val id: Int,
     val username: String,
     val isAdmin: Boolean
 )

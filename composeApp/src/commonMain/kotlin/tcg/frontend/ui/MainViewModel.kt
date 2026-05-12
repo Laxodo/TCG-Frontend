@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import tcg.frontend.aplicacion.UserSessionManager
 
-
 class MainViewModel(private val sessionManager: UserSessionManager): ViewModel() {
     val currentUserState = sessionManager.currentUser
 

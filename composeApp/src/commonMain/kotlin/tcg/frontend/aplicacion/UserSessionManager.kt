@@ -50,7 +50,7 @@ class UserSessionManager(private val tokenStorage: TokenStorage) {
     private fun userFromToken(jwt: TokenJwt): UserSession {
         val payload = jwt.payload
         return UserSession(
-            id = payload.id ?: payload.get("id") ?: 0,
+            id = (payload.id ?: payload.get("id") ?: 0).toInt(),
             username = payload.username ?: payload.get("username") ?: "unknown",
             isAdmin = payload.isAdmin ?: false
         )

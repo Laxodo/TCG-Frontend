@@ -1,4 +1,4 @@
-package tcg.frontend.aplicacion.delete
+package tcg.frontend.aplicacion.usuarios.delete
 
 import tcg.frontend.dominio.IUserRepository
 

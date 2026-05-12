@@ -72,6 +72,11 @@ kotlin {
 
             // Administracion de token
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
+
+            // coil
+            implementation("io.coil-kt.coil3:coil:3.4.0")
+            implementation("io.coil-kt.coil3:coil-compose:3.4.0")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.4.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -33,7 +33,7 @@ fun Main() {
                         mainViewModel.logout()
                 })
             }else{
-                UserMain({
+                UserMain(mainViewModel,{
                     mainViewModel.logout()
                 })
             }

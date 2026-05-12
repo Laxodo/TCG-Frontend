@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tcg.frontend.aplicacion.delete.DeleteUserCommand
-import tcg.frontend.aplicacion.delete.DeleteUserUseCase
+import tcg.frontend.aplicacion.usuarios.delete.DeleteUserCommand
+import tcg.frontend.aplicacion.usuarios.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.usuarios.listar.ListUsersUseCase
 import tcg.frontend.dominio.User
 import kotlin.collections.mutableListOf

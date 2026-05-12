@@ -1,4 +1,4 @@
-package tcg.frontend.aplicacion.delete
+package tcg.frontend.aplicacion.usuarios.delete
 
 data class DeleteUserCommand(
     val id: Int

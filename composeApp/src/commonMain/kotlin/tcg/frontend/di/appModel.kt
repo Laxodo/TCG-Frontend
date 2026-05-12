@@ -3,21 +3,23 @@ package tcg.frontend.di
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.forms.FormDataContent
-import io.ktor.client.request.forms.formData
-import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import tcg.frontend.aplicacion.UserSessionManager
-import tcg.frontend.aplicacion.delete.DeleteUserUseCase
+import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
+import tcg.frontend.aplicacion.usuarios.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.login.LoginUseCase
+import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUseCase
+import tcg.frontend.aplicacion.usercard.listar.ListUserCardUseCase
 import tcg.frontend.aplicacion.usuarios.listar.ListUsersUseCase
+import tcg.frontend.dominio.IExpansionRepository
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
 import tcg.frontend.infraestructura.TokenStorage
 import tcg.frontend.infraestructura.ktor.createHttpClient
+import tcg.frontend.infraestructura.repository.ExpansionRepository
 import tcg.frontend.infraestructura.repository.UserRepository
 import tcg.frontend.ui.MainViewModel
 import tcg.frontend.ui.administracion.AdminMainViewModel
@@ -25,6 +27,10 @@ import tcg.frontend.ui.administracion.users.UserViewModel
 import tcg.frontend.ui.administracion.users.form.UserFormViewModel
 import tcg.frontend.ui.login.LoginViewModel
 import tcg.frontend.ui.usuario.UserMainViewModel
+import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
+import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
+import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
+import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
 
 val appModel = module{
 
@@ -43,11 +49,15 @@ val appModel = module{
     single { UserSessionManager(get()) }
 
     single<IUserRepository> { UserRepository("http://192.168.0.113:8000", get()) }
+    single<IExpansionRepository> { ExpansionRepository("http://192.168.0.113:8000", get()) }
     single { createHttpClient(get()) }
 
     factory { LoginUseCase(get(), get()) }
     factory { ListUsersUseCase(get()) }
     factory { DeleteUserUseCase(get()) }
+    factory { ListExpansionUseCase(get()) }
+    factory { ListUserCardUseCase(get()) }
+    factory { ListUserCardCollectionUseCase(get()) }
 
     viewModel { AdminMainViewModel() }
     viewModel { UserMainViewModel() }
@@ -55,4 +65,11 @@ val appModel = module{
     viewModel { UserViewModel(get(), get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
+    viewModel { ExpansionViewModel(get()) }
+    viewModel { (id: Int, idExpansion: Int) -> UserCardGalleryViewModel(idUser = id, idExpansion = idExpansion, listUserCardUseCase = get()) }
+    viewModel { (id: Int, idExpansion: Int) -> UserCardCollectionViewModel(
+        idUser = id, idExpansion = idExpansion,
+        listUserCardCollectionUseCase = get()
+    ) }
+    viewModel { UserCardGalleryDetailViewModel(null) }
 }
