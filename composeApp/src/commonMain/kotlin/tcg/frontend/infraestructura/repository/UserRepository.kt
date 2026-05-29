@@ -15,10 +15,12 @@ import tcg.frontend.aplicacion.login.LoginCommand
 import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionCommand
 import tcg.frontend.aplicacion.usercard.listCollection.UserCardCollectionDTO
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardCommand
+import tcg.frontend.aplicacion.usuarios.getuser.GetUserCommand
 import tcg.frontend.dominio.Card
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
 import tcg.frontend.dominio.UserCard
+import tcg.frontend.infraestructura.entities.user.GetUserByIdResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCardResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCollectionResponse
 import tcg.frontend.infraestructura.entities.user.GetUserResponse
@@ -65,6 +67,28 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
                     isAdmin = it.is_admin
                 )
             }
+        }
+    }
+
+    override suspend fun getUserById(getUserCommand: GetUserCommand): Result<User> {
+        return runCatching {
+            val request = this._client.get("$url/users/${getUserCommand.id}")
+
+            val item = request.body<GetUserByIdResponse>()
+
+            if(request.status.value !in 200..<300)
+                throw Exception("${request.status.value}-${request.status.description}")
+
+            User(
+                id = item.id,
+                name = item.name,
+                username = item.username,
+                email = item.email,
+                money = item.money,
+                openBoosted = item.opened_boosters,
+                exchanges = item.exchanges,
+                isAdmin = item.is_admin
+            )
         }
     }
 

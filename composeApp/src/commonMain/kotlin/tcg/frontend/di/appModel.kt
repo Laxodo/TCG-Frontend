@@ -11,9 +11,11 @@ import tcg.frontend.aplicacion.UserSessionManager
 import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
 import tcg.frontend.aplicacion.usuarios.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.login.LoginUseCase
+import tcg.frontend.aplicacion.market.openboosted.OpenBoosterUseCase
 import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
 import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUseCase
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardUseCase
+import tcg.frontend.aplicacion.usuarios.getuser.GetUserUseCase
 import tcg.frontend.aplicacion.usuarios.listar.ListUsersUseCase
 import tcg.frontend.dominio.IExpansionRepository
 import tcg.frontend.dominio.IMarketRepository
@@ -31,6 +33,7 @@ import tcg.frontend.ui.administracion.users.form.UserFormViewModel
 import tcg.frontend.ui.login.LoginViewModel
 import tcg.frontend.ui.usuario.UserMainViewModel
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
+import tcg.frontend.ui.usuario.market.openbooster.OpenBoosterViewModel
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
@@ -54,6 +57,7 @@ val appModel = module{
     single<IUserRepository> { UserRepository("http://192.168.0.113:8000", get()) }
     single<IExpansionRepository> { ExpansionRepository("http://192.168.0.113:8000", get()) }
     single<IMarketRepository> { MarketRepository("http://192.168.0.113:8000", get()) }
+    single { UserMainViewModel(get(), get()) }
     single { createHttpClient(get()) }
 
     factory { LoginUseCase(get(), get()) }
@@ -63,18 +67,20 @@ val appModel = module{
     factory { ListUserCardUseCase(get()) }
     factory { ListUserCardCollectionUseCase(get()) }
     factory { QuickSellUseCase(get()) }
+    factory { OpenBoosterUseCase(get()) }
+    factory { GetUserUseCase(get()) }
 
     viewModel { AdminMainViewModel() }
-    viewModel { UserMainViewModel() }
     viewModel { (item: User?) -> UserFormViewModel(item = item) }
     viewModel { UserViewModel(get(), get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { ExpansionViewModel(get()) }
-    viewModel { (id: Int, idExpansion: Int) -> UserCardGalleryViewModel(idUser = id, idExpansion = idExpansion, listUserCardUseCase = get(), quickSellUseCase = get()) }
+    viewModel { OpenBoosterViewModel(get(), get()) }
+    viewModel { (id: Int, idExpansion: Int) -> UserCardGalleryViewModel(idUser = id, idExpansion = idExpansion, listUserCardUseCase = get(), quickSellUseCase = get(), userMainViewModel = get()) }
     viewModel { (id: Int, idExpansion: Int) -> UserCardCollectionViewModel(
         idUser = id, idExpansion = idExpansion,
         listUserCardCollectionUseCase = get()
     ) }
-    viewModel { UserCardGalleryDetailViewModel(get(), null) }
+    viewModel { UserCardGalleryDetailViewModel(get(), get(), null) }
 }

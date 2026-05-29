@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +23,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,6 +44,9 @@ import tcg.frontend.Routes
 import tcg.frontend.ui.MainViewModel
 import tcg.frontend.ui.usuario.expansion.Expansion
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
+import tcg.frontend.ui.usuario.market.openbooster.OpenBooster
+import tcg.frontend.ui.usuario.market.openbooster.OpenBoosterViewModel
+import tcg.frontend.ui.usuario.market.openbooster.view.OpenBoosterView
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollection
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGallery
@@ -56,21 +62,31 @@ fun UserMain(
     val userMainViewModel: UserMainViewModel = koinViewModel()
     val expansionViewModel: ExpansionViewModel = koinViewModel()
     val userCardGalleryDetailViewModel: UserCardGalleryDetailViewModel = koinViewModel()
+    val openBoosterViewModel: OpenBoosterViewModel = koinViewModel()
     val navController = rememberNavController()
 
     val options by userMainViewModel.options.collectAsState()
+    val user by userMainViewModel.user.collectAsState()
     val window = currentWindowAdaptiveInfo()
     var screenState by remember { mutableStateOf(true) }
 
     userMainViewModel.setOptions(
         listOf(
             ItemOption(
-                Icons.Default.Style, {
+                Icons.Default.Shop, {
+                    navController.navigate(Routes.OPENBOOSTER){
+                        launchSingleTop = true
+                    }
+                },
+                "Abrir sobres"
+            ),
+            ItemOption(
+                Icons.Default.Inventory2, {
                     navController.navigate(Routes.EXPANSIONS){
                         launchSingleTop = true
                     }
                 },
-                "Expansiones"
+                "Inventario"
             ),
             ItemOption(
                 Icons.AutoMirrored.Filled.Logout, {
@@ -88,6 +104,36 @@ fun UserMain(
         ){
             composable(Routes.ACCESS){
                 Access()
+            }
+
+            composable(Routes.OPENBOOSTER) {
+                OpenBooster(
+                    userMainViewModel,
+                    expansionViewModel,
+                    {
+                        openBoosterViewModel.openBoosted(it.id)
+                        navController.navigate(Routes.OPENBOOSTERVIEW){
+                            launchSingleTop = true
+                        }
+                    },
+                    {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Routes.OPENBOOSTERVIEW) {
+                OpenBoosterView(
+                    userMainViewModel,
+                    expansionViewModel,
+                    openBoosterViewModel,
+                    {
+                        openBoosterViewModel.openBoosted(openBoosterViewModel.items.value.first().idExpansion)
+                    },
+                    {
+                        navController.popBackStack()
+                    }
+                )
             }
 
             composable(Routes.EXPANSIONS){
@@ -209,7 +255,12 @@ fun UserMain(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = user?.money?.toString() + " €",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
                         options.forEach { item ->
                             NavigationDrawerItem(
                                 icon = {
@@ -233,6 +284,7 @@ fun UserMain(
 
                             )
                         }
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             },

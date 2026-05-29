@@ -14,11 +14,15 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.ChangeCircle
+import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Redo
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.SwapHorizontalCircle
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -87,7 +91,7 @@ fun UserCardGallery(
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
+                                imageVector = Icons.AutoMirrored.Filled.Undo,
                                 contentDescription = "Back",
                                 modifier = Modifier
                                     .size(ButtonDefaults.IconSize)
@@ -114,7 +118,7 @@ fun UserCardGallery(
                                 colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.MonetizationOn,
+                                    imageVector = Icons.Default.CurrencyExchange,
                                     contentDescription = "Quick shell",
                                     modifier = Modifier
                                         .size(ButtonDefaults.IconSize)
@@ -139,7 +143,7 @@ fun UserCardGallery(
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.SwapHorizontalCircle,
+                                imageVector = Icons.Default.SwapHoriz,
                                 contentDescription = "Change View",
                                 modifier = Modifier
                                     .size(ButtonDefaults.IconSize)
@@ -150,7 +154,7 @@ fun UserCardGallery(
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.ChangeCircle,
+                                imageVector = Icons.Default.Refresh,
                                 contentDescription = "Recargar",
                                 modifier = Modifier
                                     .size(ButtonDefaults.IconSize)

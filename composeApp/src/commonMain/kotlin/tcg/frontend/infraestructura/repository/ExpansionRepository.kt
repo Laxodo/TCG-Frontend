@@ -23,6 +23,7 @@ class ExpansionRepository(private val url: String, private val _client: HttpClie
                     id = it.id,
                     idGeneration = it.id_generacion,
                     name = it.name,
+                    price = it.price,
                     year = it.year
                 )
             }

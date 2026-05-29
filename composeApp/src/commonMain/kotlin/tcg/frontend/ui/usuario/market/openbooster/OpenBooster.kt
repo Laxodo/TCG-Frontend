@@ -1,9 +1,7 @@
-package tcg.frontend.ui.usuario.usercard.collectionView
+package tcg.frontend.ui.usuario.market.openbooster
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,11 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.automirrored.filled.Undo
-import androidx.compose.material.icons.filled.ChangeCircle
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.SwapHoriz
-import androidx.compose.material.icons.filled.SwapHorizontalCircle
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -36,26 +30,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import tcg.frontend.dominio.Expansion
+import tcg.frontend.dominio.User
+import tcg.frontend.ui.usuario.UserMainViewModel
+import tcg.frontend.ui.usuario.expansion.ExpansionCard
+import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
 
 @Composable
-fun UserCardCollection(
-    userCardCollectionViewModel: UserCardCollectionViewModel,
-    onBack: () -> Unit,
-    onChangeView: () -> Unit
-){
-    val items by userCardCollectionViewModel.items.collectAsState()
+fun OpenBooster(
+    userMainViewModel: UserMainViewModel,
+    expansionViewModel: ExpansionViewModel,
+    onOpenBooster: (Expansion) -> Unit,
+    onBack: () -> Unit
+) {
+    val items by expansionViewModel.items.collectAsState()
     var searchText by remember { mutableStateOf("")}
-    val state by userCardCollectionViewModel.state.collectAsState()
+    val state by expansionViewModel.state.collectAsState()
     val filteredItems = items.filter {
         if (searchText.isNotBlank()) {
-            it.cardName.contains(searchText, ignoreCase = true)
+            it.name.contains(searchText, ignoreCase = true)
         }else{
             true
         }
     }
     Box(
-    modifier = Modifier.fillMaxSize().padding(16.dp),
-    contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
         if (state.isLoading){
             CircularProgressIndicator()
@@ -70,8 +70,8 @@ fun UserCardCollection(
                         Text(text = state.errorMessage!!, color = MaterialTheme.colorScheme.error)
                     }
                 } else {
-                    FlowRow(
-                        verticalArrangement = Arrangement.Center,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
@@ -102,28 +102,6 @@ fun UserCardCollection(
                                 .weight(1f)
                                 .padding(8.dp)
                         )
-                        OutlinedButton(
-                            onClick = onChangeView,
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.SwapHoriz,
-                                contentDescription = "Change View",
-                                modifier = Modifier
-                                    .size(ButtonDefaults.IconSize)
-                            )
-                        }
-                        OutlinedButton(
-                            onClick = { userCardCollectionViewModel.refresh() },
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Refresh,
-                                contentDescription = "Recargar",
-                                modifier = Modifier
-                                    .size(ButtonDefaults.IconSize)
-                            )
-                        }
                     }
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(
@@ -131,8 +109,12 @@ fun UserCardCollection(
                         )
                     ) {
                         items(filteredItems.size) { item ->
-                            UserCardCollectionCard(
-                                filteredItems[item]
+                            OpenBoosterCard(
+                                userMainViewModel,
+                                filteredItems[item],
+                                {
+                                    onOpenBooster(it)
+                                }
                             )
                         }
                     }

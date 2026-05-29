@@ -10,12 +10,14 @@ import kotlinx.coroutines.launch
 import tcg.frontend.aplicacion.market.quicksell.QuickSellCommand
 import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
 import tcg.frontend.aplicacion.usercard.listar.UserCardDTO
+import tcg.frontend.ui.usuario.UserMainViewModel
 
 data class UserCardGalleryState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
 class UserCardGalleryDetailViewModel(
+    private val userMainViewModel: UserMainViewModel,
     private val quickSellUseCase: QuickSellUseCase,
     item: UserCardDTO?
 ): ViewModel() {
@@ -35,6 +37,7 @@ class UserCardGalleryDetailViewModel(
             quickSellUseCase.invoke(QuickSellCommand(listOf(_usercard.value?.userCard?.id ?: -999)))
                 .onSuccess { moneyGained ->
                     _state.update { it.copy(isLoading = false) }
+                    userMainViewModel.refreshUser()
                 }
                 .onFailure { error ->
                     _state.update { it.copy(errorMessage = error.message, isLoading = false) }

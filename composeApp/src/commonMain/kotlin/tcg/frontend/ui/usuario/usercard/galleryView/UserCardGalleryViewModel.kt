@@ -12,6 +12,7 @@ import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardCommand
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardUseCase
 import tcg.frontend.aplicacion.usercard.listar.UserCardDTO
+import tcg.frontend.ui.usuario.UserMainViewModel
 import kotlin.collections.MutableList
 
 data class UserCardState(
@@ -19,6 +20,7 @@ data class UserCardState(
     val errorMessage: String? = null
 )
 class UserCardGalleryViewModel(
+    private val userMainViewModel: UserMainViewModel,
     private val listUserCardUseCase: ListUserCardUseCase,
     private val quickSellUseCase: QuickSellUseCase,
     private val idExpansion: Int,
@@ -63,6 +65,7 @@ class UserCardGalleryViewModel(
                 .onSuccess { moneyGained ->
                     _state.update { it.copy(isLoading = false) }
                     _selectedItems.value.clear()
+                    userMainViewModel.refreshUser()
                     refresh()
                 }
                 .onFailure { error ->

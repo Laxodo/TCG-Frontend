@@ -8,4 +8,6 @@ object Routes {
     const val EXPANSIONS = "expansions"
     const val USERCARDS = "usercards"
     const val USERCARD = "usercard"
+    const val OPENBOOSTER = "openbooster"
+    const val OPENBOOSTERVIEW = "openboosterview"
 }
