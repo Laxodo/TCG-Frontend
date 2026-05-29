@@ -1,6 +1,7 @@
-package tcg.frontend.infraestructura.entities
+package tcg.frontend.infraestructura.entities.user
 
 import kotlinx.serialization.Serializable
+import tcg.frontend.infraestructura.entities.card.GetCardResponse
 
 @Serializable
 data class GetUserCardResponse (

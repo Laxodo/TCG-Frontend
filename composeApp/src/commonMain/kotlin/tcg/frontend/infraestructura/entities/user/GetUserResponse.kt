@@ -1,4 +1,4 @@
-package tcg.frontend.infraestructura.entities
+package tcg.frontend.infraestructura.entities.user
 
 import kotlinx.serialization.Serializable
 

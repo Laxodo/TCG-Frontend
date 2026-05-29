@@ -152,11 +152,11 @@ fun Card(
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            FilledTonalButton(onClick = { onQuickSell() }) {
+            FilledTonalButton(onClick = { onSell() }) {
                 Icon(Icons.Default.MonetizationOn, contentDescription = null)
                 Text("Subir al mercado")
             }
-            FilledTonalButton(onClick = { onSell() }) {
+            FilledTonalButton(onClick = { onQuickSell() }) {
                 Icon(Icons.Default.FlashOn, contentDescription = null)
                 Text("Venta rapida")
             }

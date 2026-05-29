@@ -11,15 +11,18 @@ import tcg.frontend.aplicacion.UserSessionManager
 import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
 import tcg.frontend.aplicacion.usuarios.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.login.LoginUseCase
+import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
 import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUseCase
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardUseCase
 import tcg.frontend.aplicacion.usuarios.listar.ListUsersUseCase
 import tcg.frontend.dominio.IExpansionRepository
+import tcg.frontend.dominio.IMarketRepository
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
 import tcg.frontend.infraestructura.TokenStorage
 import tcg.frontend.infraestructura.ktor.createHttpClient
 import tcg.frontend.infraestructura.repository.ExpansionRepository
+import tcg.frontend.infraestructura.repository.MarketRepository
 import tcg.frontend.infraestructura.repository.UserRepository
 import tcg.frontend.ui.MainViewModel
 import tcg.frontend.ui.administracion.AdminMainViewModel
@@ -50,6 +53,7 @@ val appModel = module{
 
     single<IUserRepository> { UserRepository("http://192.168.0.113:8000", get()) }
     single<IExpansionRepository> { ExpansionRepository("http://192.168.0.113:8000", get()) }
+    single<IMarketRepository> { MarketRepository("http://192.168.0.113:8000", get()) }
     single { createHttpClient(get()) }
 
     factory { LoginUseCase(get(), get()) }
@@ -58,6 +62,7 @@ val appModel = module{
     factory { ListExpansionUseCase(get()) }
     factory { ListUserCardUseCase(get()) }
     factory { ListUserCardCollectionUseCase(get()) }
+    factory { QuickSellUseCase(get()) }
 
     viewModel { AdminMainViewModel() }
     viewModel { UserMainViewModel() }
@@ -66,10 +71,10 @@ val appModel = module{
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { ExpansionViewModel(get()) }
-    viewModel { (id: Int, idExpansion: Int) -> UserCardGalleryViewModel(idUser = id, idExpansion = idExpansion, listUserCardUseCase = get()) }
+    viewModel { (id: Int, idExpansion: Int) -> UserCardGalleryViewModel(idUser = id, idExpansion = idExpansion, listUserCardUseCase = get(), quickSellUseCase = get()) }
     viewModel { (id: Int, idExpansion: Int) -> UserCardCollectionViewModel(
         idUser = id, idExpansion = idExpansion,
         listUserCardCollectionUseCase = get()
     ) }
-    viewModel { UserCardGalleryDetailViewModel(null) }
+    viewModel { UserCardGalleryDetailViewModel(get(), null) }
 }

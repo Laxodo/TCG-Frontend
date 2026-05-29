@@ -5,7 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import tcg.frontend.dominio.Expansion
 import tcg.frontend.dominio.IExpansionRepository
-import tcg.frontend.infraestructura.entities.GetExpansionResponse
+import tcg.frontend.infraestructura.entities.expansion.GetExpansionResponse
 
 class ExpansionRepository(private val url: String, private val _client: HttpClient): IExpansionRepository {
     override suspend fun getExpansion(): Result<List<Expansion>> {

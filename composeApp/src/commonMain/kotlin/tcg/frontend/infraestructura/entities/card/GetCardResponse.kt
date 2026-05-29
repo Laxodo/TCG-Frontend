@@ -1,4 +1,4 @@
-package tcg.frontend.infraestructura.entities
+package tcg.frontend.infraestructura.entities.card
 
 import kotlinx.serialization.Serializable
 

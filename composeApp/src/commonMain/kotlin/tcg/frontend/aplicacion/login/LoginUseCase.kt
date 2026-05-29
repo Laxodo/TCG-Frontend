@@ -2,7 +2,7 @@ package tcg.frontend.aplicacion.login
 
 import tcg.frontend.aplicacion.UserSessionManager
 import tcg.frontend.dominio.IUserRepository
-import tcg.frontend.infraestructura.entities.LoginResponse
+import tcg.frontend.infraestructura.entities.user.LoginResponse
 
 class LoginUseCase(private val repository: IUserRepository, private val userSessionManager: UserSessionManager) {
     suspend fun invoke(loginCommand: LoginCommand): Result<LoginResponse>{

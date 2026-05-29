@@ -19,10 +19,10 @@ import tcg.frontend.dominio.Card
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
 import tcg.frontend.dominio.UserCard
-import tcg.frontend.infraestructura.entities.GetUserCardResponse
-import tcg.frontend.infraestructura.entities.GetUserCollectionResponse
-import tcg.frontend.infraestructura.entities.GetUserResponse
-import tcg.frontend.infraestructura.entities.LoginResponse
+import tcg.frontend.infraestructura.entities.user.GetUserCardResponse
+import tcg.frontend.infraestructura.entities.user.GetUserCollectionResponse
+import tcg.frontend.infraestructura.entities.user.GetUserResponse
+import tcg.frontend.infraestructura.entities.user.LoginResponse
 import kotlin.runCatching
 
 class UserRepository(private val url: String, private val _client: HttpClient) : IUserRepository {
@@ -94,7 +94,7 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
             if(request.status.value !in 200..<300)
                 throw Exception("${request.status.value}-${request.status.description}")
 
-            item.map { it ->
+            item.associate { it ->
                 val card = Card(
                     id = it.card.id,
                     idExpansion = it.card.id_expansion,
@@ -105,7 +105,7 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
                     frontcard = it.card.frontcard,
                     backcard = it.card.backcard
                 )
-                val userCards = it.user_cards.map { it->
+                val userCards = it.user_cards.map { it ->
                     UserCard(
                         id = it.id,
                         idUser = it.id_user,
@@ -116,7 +116,7 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
                     )
                 }
                 card to userCards
-            }.toMap()
+            }
         }
     }
 

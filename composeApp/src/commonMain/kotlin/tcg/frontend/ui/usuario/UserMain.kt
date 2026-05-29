@@ -102,6 +102,7 @@ fun UserMain(
                     })
             }
 
+            // TODO: The gallery doesn't refresh when returning from the single card detail view.
             composable(Routes.USERCARDS) {
                 val userCardGalleryViewModel: UserCardGalleryViewModel = koinViewModel<UserCardGalleryViewModel>{
                     parametersOf(mainViewModel.currentUserState.value?.id, expansionViewModel.selected.value?.id)
@@ -109,13 +110,13 @@ fun UserMain(
                 val userCardCollectionViewModel: UserCardCollectionViewModel = koinViewModel<UserCardCollectionViewModel> {
                     parametersOf(mainViewModel.currentUserState.value?.id, expansionViewModel.selected.value?.id)
                 }
-                if (screenState) {
 
+                if (screenState) {
                     UserCardGallery(
                         userCardGalleryViewModel,
                         {
                             if (userCardGalleryViewModel.sellMode.value){
-                                userCardGalleryViewModel.setSelectedUSerCard(it)
+                                userCardGalleryViewModel.setSelectedUserCard(it)
                             }else{
                                 userCardGalleryDetailViewModel.setSelectedUserCard(it)
                                 navController.navigate(Routes.USERCARD) {
@@ -133,7 +134,7 @@ fun UserMain(
                             userCardGalleryViewModel.changeSellMode()
                         },
                         {
-                            TODO("The function has not been implemented yet.")
+                            userCardGalleryViewModel.quickSell()
                         }
                     )
                 } else {
@@ -153,7 +154,8 @@ fun UserMain(
                 UserCardGalleryDetail(
                     userCardGalleryDetailViewModel,
                     {
-                        TODO("The function has not been implemented yet.")
+                        userCardGalleryDetailViewModel.quickSell()
+                        navController.popBackStack()
                     },
                     {
                         TODO("The function has not been implemented yet.")

@@ -38,7 +38,7 @@ class UserCardCollectionViewModel(
                 .onSuccess { usercards ->
                     _state.update { it.copy(isLoading = false) }
                     _items.value.clear()
-                    _items.value.addAll(usercards)
+                    _items.value = usercards as MutableList<UserCardCollectionDTO>
                 }
                 .onFailure { error ->
                     _state.update { it.copy(errorMessage = error.message, isLoading = false) }
