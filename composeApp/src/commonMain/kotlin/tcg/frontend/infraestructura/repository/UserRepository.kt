@@ -8,6 +8,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import tcg.frontend.aplicacion.usuarios.delete.DeleteUserCommand
@@ -16,6 +17,7 @@ import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionCom
 import tcg.frontend.aplicacion.usercard.listCollection.UserCardCollectionDTO
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardCommand
 import tcg.frontend.aplicacion.usuarios.getuser.GetUserCommand
+import tcg.frontend.application.register.RegisterCommand
 import tcg.frontend.dominio.Card
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
@@ -25,9 +27,29 @@ import tcg.frontend.infraestructura.entities.user.GetUserCardResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCollectionResponse
 import tcg.frontend.infraestructura.entities.user.GetUserResponse
 import tcg.frontend.infraestructura.entities.user.LoginResponse
+import tcg.frontend.infraestructura.entities.user.RegisterResponse
 import kotlin.runCatching
 
 class UserRepository(private val url: String, private val _client: HttpClient) : IUserRepository {
+    override suspend fun register(registerCommand: RegisterCommand): Result<RegisterResponse> {
+        return runCatching {
+            val request = this._client.post("$url/users/signup") {
+                contentType(ContentType.Application.Json)
+                setBody(registerCommand)
+            }
+
+            when (request.status) {
+                HttpStatusCode.Created -> ""
+                HttpStatusCode.BadRequest -> throw Exception("Usuario o contraseña no validos")
+                HttpStatusCode.Conflict -> throw Exception("Usuario o contraseña incorrecto")
+                else -> throw Exception(request.status.description)
+            }
+
+            val item = request.body<RegisterResponse>()
+            item
+        }
+    }
+
     override suspend fun login(loginCommand: LoginCommand): Result<LoginResponse> {
         return runCatching {
             val request = this._client.post("$url/users/login") {

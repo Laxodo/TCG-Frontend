@@ -125,7 +125,7 @@ fun Register(
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = state.confirm_password,
-                    onValueChange = {},
+                    onValueChange = { registerViewModel.onConfirmPassword(it) },
                     label = { Text("Repetir Contrasesña") },
                     isError = state.confirm_passwordErr != null,
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
