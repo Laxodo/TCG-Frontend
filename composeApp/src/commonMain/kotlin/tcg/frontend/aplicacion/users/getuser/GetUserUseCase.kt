@@ -1,4 +1,4 @@
-package tcg.frontend.aplicacion.usuarios.getuser
+package tcg.frontend.aplicacion.users.getuser
 
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User

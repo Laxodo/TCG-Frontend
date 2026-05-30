@@ -83,7 +83,6 @@ fun AdminMain(
             }
 
             composable(Routes.USERS){
-                userViewModel.refresh()
                 Users(
                     userViewModel,
                     {
@@ -113,7 +112,9 @@ fun AdminMain(
                     {
                         navController.popBackStack()
                     },
-                    {}
+                    {
+                        userViewModel.updateUser(it)
+                    }
                 )
             }
 

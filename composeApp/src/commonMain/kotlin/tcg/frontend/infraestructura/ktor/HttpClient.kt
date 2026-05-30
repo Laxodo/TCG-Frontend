@@ -41,9 +41,7 @@ fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
         }
         install(Auth) {
             bearer {
-                sendWithoutRequest {
-                    true
-                }
+                cacheTokens = false
                 loadTokens {
                     val accessToken = tokenStorage.getAccessToken()
 

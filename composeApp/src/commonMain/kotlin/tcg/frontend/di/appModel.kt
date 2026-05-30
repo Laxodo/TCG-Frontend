@@ -9,14 +9,15 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import tcg.frontend.aplicacion.UserSessionManager
 import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
-import tcg.frontend.aplicacion.usuarios.delete.DeleteUserUseCase
+import tcg.frontend.aplicacion.users.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.login.LoginUseCase
 import tcg.frontend.aplicacion.market.openboosted.OpenBoosterUseCase
 import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
 import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUseCase
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardUseCase
-import tcg.frontend.aplicacion.usuarios.getuser.GetUserUseCase
-import tcg.frontend.aplicacion.usuarios.listar.ListUsersUseCase
+import tcg.frontend.aplicacion.users.getuser.GetUserUseCase
+import tcg.frontend.aplicacion.users.listar.ListUsersUseCase
+import tcg.frontend.aplicacion.users.update.UpdateUserUseCase
 import tcg.frontend.dominio.IExpansionRepository
 import tcg.frontend.dominio.IMarketRepository
 import tcg.frontend.dominio.IUserRepository
@@ -63,6 +64,7 @@ val appModel = module{
     factory { LoginUseCase(get(), get()) }
     factory { ListUsersUseCase(get()) }
     factory { DeleteUserUseCase(get()) }
+    factory { UpdateUserUseCase(get()) }
     factory { ListExpansionUseCase(get()) }
     factory { ListUserCardUseCase(get()) }
     factory { ListUserCardCollectionUseCase(get()) }
@@ -72,7 +74,7 @@ val appModel = module{
 
     viewModel { AdminMainViewModel() }
     viewModel { (item: User?) -> UserFormViewModel(item = item) }
-    viewModel { UserViewModel(get(), get()) }
+    viewModel { UserViewModel(get(), get(), get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { ExpansionViewModel(get()) }

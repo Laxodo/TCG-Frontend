@@ -5,17 +5,19 @@ import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
-import tcg.frontend.aplicacion.usuarios.delete.DeleteUserCommand
+import tcg.frontend.aplicacion.users.delete.DeleteUserCommand
 import tcg.frontend.aplicacion.login.LoginCommand
 import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionCommand
 import tcg.frontend.aplicacion.usercard.listCollection.UserCardCollectionDTO
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardCommand
-import tcg.frontend.aplicacion.usuarios.getuser.GetUserCommand
+import tcg.frontend.aplicacion.users.getuser.GetUserCommand
+import tcg.frontend.aplicacion.users.update.UpdateUserCommand
 import tcg.frontend.dominio.Card
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
@@ -25,6 +27,7 @@ import tcg.frontend.infraestructura.entities.user.GetUserCardResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCollectionResponse
 import tcg.frontend.infraestructura.entities.user.GetUserResponse
 import tcg.frontend.infraestructura.entities.user.LoginResponse
+import tcg.frontend.infraestructura.entities.user.UpdateUserRequest
 import kotlin.runCatching
 
 class UserRepository(private val url: String, private val _client: HttpClient) : IUserRepository {
@@ -74,10 +77,10 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
         return runCatching {
             val request = this._client.get("$url/users/${getUserCommand.id}")
 
-            val item = request.body<GetUserByIdResponse>()
-
             if(request.status.value !in 200..<300)
                 throw Exception("${request.status.value}-${request.status.description}")
+
+            val item = request.body<GetUserByIdResponse>()
 
             User(
                 id = item.id,
@@ -95,6 +98,28 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
     override suspend fun deleteUser(deleteCommand: DeleteUserCommand): Result<Boolean> {
         return runCatching {
             val request = this._client.delete("$url/users/${deleteCommand.id}")
+
+            if (request.status.value == 200){
+                true
+            }else
+                throw Exception("${request.status.value}-${request.status.description}")
+
+        }
+    }
+
+    override suspend fun updateUser(updateUserCommand: UpdateUserCommand): Result<Boolean> {
+        return runCatching {
+            val request = this._client.patch("$url/users/${updateUserCommand.id}"){
+                setBody(UpdateUserRequest(
+                    name = updateUserCommand.name,
+                    username = updateUserCommand.username,
+                    email = updateUserCommand.email,
+                    money = updateUserCommand.money,
+                    opened_boosters = updateUserCommand.openBoosted,
+                    exchanges = updateUserCommand.exchanges,
+                    is_admin = updateUserCommand.isAdmin
+                ))
+            }
 
             if (request.status.value == 200){
                 true

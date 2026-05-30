@@ -1,16 +1,13 @@
 package tcg.frontend.ui.usuario
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tcg.frontend.aplicacion.market.quicksell.QuickSellCommand
-import tcg.frontend.aplicacion.usuarios.getuser.GetUserCommand
-import tcg.frontend.aplicacion.usuarios.getuser.GetUserUseCase
+import tcg.frontend.aplicacion.users.getuser.GetUserCommand
+import tcg.frontend.aplicacion.users.getuser.GetUserUseCase
 import tcg.frontend.dominio.User
 import tcg.frontend.ui.MainViewModel
 

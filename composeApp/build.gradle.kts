@@ -56,11 +56,11 @@ kotlin {
 
             // Ktor
             implementation(libs.ktor.client.core)
-            implementation("io.ktor:ktor-client-content-negotiation:3.3.0")
-            implementation("io.ktor:ktor-server-cors:3.3.0")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.0")
-            implementation("io.ktor:ktor-client-logging:3.3.0")
-            implementation("io.ktor:ktor-client-auth:3.3.0")
+            implementation("io.ktor:ktor-client-content-negotiation:3.5.0")
+            implementation("io.ktor:ktor-server-cors:3.5.0")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:3.5.0")
+            implementation("io.ktor:ktor-client-logging:3.5.0")
+            implementation("io.ktor:ktor-client-auth:3.5.0")
 
             // Iconos
             implementation(compose.material)

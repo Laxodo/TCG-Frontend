@@ -48,7 +48,6 @@ fun UserForm(
 ){
     val state by userFormViewModel.uiState.collectAsState()
     val formValid by userFormViewModel.isFormValid.collectAsState()
-    val selected = userViewModel.selected.collectAsState()
     val enable = userViewModel.editMode
 
     val scrollState = rememberScrollState()
@@ -80,14 +79,10 @@ fun UserForm(
                     modifier = Modifier.size(40.dp)
                 )
                 Text(
-                    text = if (selected.value == null)
-                        "Crear nuevo usuario"
-                    else {
-                        if (enable) {
-                            "Editar perfil"
-                        } else {
-                            "Ver perfil"
-                        }
+                    text = if (enable) {
+                        "Editar perfil"
+                    } else {
+                        "Ver perfil"
                     },
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onSurface
@@ -169,7 +164,7 @@ fun UserForm(
                 onValueChange = { userFormViewModel.onOpenBoostedChange(it) },
                 label = { Text("Sobres abiertos") },
                 leadingIcon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                isError = state.moneyError != null,
+                isError = state.openBoostedError != null,
                 modifier = Modifier.fillMaxWidth()
             )
             state.openBoostedError?.let {
@@ -183,10 +178,10 @@ fun UserForm(
             OutlinedTextField(
                 value = state.exchanges,
                 enabled = enable,
-                onValueChange = { userFormViewModel.onOpenBoostedChange(it) },
+                onValueChange = { userFormViewModel.onExchangesChange(it) },
                 label = { Text("Intercambios") },
                 leadingIcon = { Icon(Icons.Default.SwapHoriz, contentDescription = null) },
-                isError = state.moneyError != null,
+                isError = state.exchangesError != null,
                 modifier = Modifier.fillMaxWidth()
             )
             state.exchangesError?.let {
@@ -224,7 +219,7 @@ fun UserForm(
                         onClick = {
                             userFormViewModel.submit(
                                 onSuccess = {
-                                    onConfirm(userFormViewModel.uiState.value)
+                                    onConfirm(it)
                                 },
                                 onFailure = {}
                             )

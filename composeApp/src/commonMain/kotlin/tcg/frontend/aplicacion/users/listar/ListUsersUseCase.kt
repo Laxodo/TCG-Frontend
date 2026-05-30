@@ -1,4 +1,4 @@
-package tcg.frontend.aplicacion.usuarios.listar
+package tcg.frontend.aplicacion.users.listar
 
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User

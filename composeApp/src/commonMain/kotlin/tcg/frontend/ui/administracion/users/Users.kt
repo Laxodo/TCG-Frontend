@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -65,50 +66,46 @@ fun Users(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = { searchText = it },
+                        shape = RoundedCornerShape(16.dp),
+                        placeholder = { Text("Buscar...") },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "Search"
+                            )
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    OutlinedButton(
+                        onClick = { userViewModel.refresh() },
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Recargar",
+                            modifier = Modifier
+                                .size(ButtonDefaults.IconSize)
+                        )
+                    }
+
+                }
                 if (state.errorMessage != null) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = state.errorMessage!!, color = MaterialTheme.colorScheme.error)
                     }
                 } else {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp)
-                    ) {
-                        OutlinedTextField(
-                            value = searchText,
-                            onValueChange = { searchText = it },
-                            shape = RoundedCornerShape(16.dp),
-                            placeholder = { Text("Buscar...") },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Default.Search,
-                                    contentDescription = "Search"
-                                )
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(8.dp)
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        OutlinedButton(
-                            onClick = {
-                                userViewModel.setSelectedUser(null)
-                                onSelectItem(userViewModel.selected.value)
-
-                            },
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Add",
-                                modifier = Modifier
-                                    .size(ButtonDefaults.IconSize)
-                            )
-                        }
-
-                    }
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(
                             minSize = 512.dp

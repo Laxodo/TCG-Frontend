@@ -17,9 +17,9 @@ class UserFormViewModel(
         name = item?.name ?: "",
         username = item?.username ?: "",
         email = item?.email ?: "",
-        money = item?.money.toString() ?: "",
-        openBoosted = item?.openBoosted.toString() ?: "",
-        exchanges = item?.exchanges.toString() ?: "",
+        money = item?.money?.toString() ?: "0",
+        openBoosted = item?.openBoosted?.toString() ?: "0",
+        exchanges = item?.exchanges?.toString() ?: "0",
         isAdmin = item?.isAdmin ?: false
     ))
 
@@ -82,7 +82,15 @@ class UserFormViewModel(
     }
 
     fun clear(){
-        _uiState.value = UserFormState()
+        _uiState.value = UserFormState(
+            name = item?.name ?: "",
+            username = item?.username ?: "",
+            email = item?.email ?: "",
+            money = item?.money?.toString() ?: "0",
+            openBoosted = item?.openBoosted?.toString() ?: "0",
+            exchanges = item?.exchanges?.toString() ?: "0",
+            isAdmin = item?.isAdmin ?: false
+        )
     }
 
     fun validateName(s: String): String?{
@@ -97,6 +105,8 @@ class UserFormViewModel(
 
     fun validateEmail(s: String): String?{
         if(s.isBlank()) return "El correo no puede estar en blanco"
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
+        if (!emailRegex.matches(s)) return "El correo no tiene un formato valido"
         return null
     }
 
@@ -109,12 +119,14 @@ class UserFormViewModel(
     fun validateOpenBoosted(s: String): String?{
         if(s.isBlank()) return "EL numero de sobres no puede estar vacio"
         if(s.toIntOrNull() == null) return "El formato no es valido"
+        if (s.toInt() < 0) return "El numero de sobres abiertos no puede ser menor que 0"
         return null
     }
 
     fun validateExchanges(s: String): String?{
         if(s.isBlank()) return "El numero de intercambios no puede estar vacio"
         if(s.toIntOrNull() == null) return "El formato no es valido"
+        if (s.toInt() < 0) return "El numero de intercambios no puede ser menor que 0"
         return null
     }
 
