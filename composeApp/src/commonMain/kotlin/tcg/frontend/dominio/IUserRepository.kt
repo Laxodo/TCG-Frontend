@@ -11,7 +11,7 @@ import tcg.frontend.infraestructura.entities.user.RegisterResponse
 import tcg.frontend.infraestructura.entities.user.LoginResponse
 
 interface IUserRepository {
-    suspend fun register(registerCommand: RegisterCommand): Result<RegisterResponse>
+    suspend fun register(registerCommand: RegisterCommand): Result<Unit>
     suspend fun login(loginCommand: LoginCommand): Result<LoginResponse>
     suspend fun getUsers(): Result<List<User>>
     suspend fun getUserById(getUserCommand: GetUserCommand): Result<User>

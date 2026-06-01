@@ -18,6 +18,7 @@ import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUse
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardUseCase
 import tcg.frontend.aplicacion.usuarios.getuser.GetUserUseCase
 import tcg.frontend.aplicacion.usuarios.listar.ListUsersUseCase
+import tcg.frontend.application.register.RegisterUserCase
 import tcg.frontend.dominio.IExpansionRepository
 import tcg.frontend.dominio.IGenerationRepository
 import tcg.frontend.dominio.IMarketRepository
@@ -30,6 +31,7 @@ import tcg.frontend.infraestructura.repository.GenerationRepository
 import tcg.frontend.infraestructura.repository.MarketRepository
 import tcg.frontend.infraestructura.repository.UserRepository
 import tcg.frontend.ui.MainViewModel
+import tcg.frontend.ui.register.RegisterViewModel
 import tcg.frontend.ui.administracion.AdminMainViewModel
 import tcg.frontend.ui.administracion.users.UserViewModel
 import tcg.frontend.ui.administracion.users.form.UserFormViewModel
@@ -58,14 +60,15 @@ val appModel = module{
     single { TokenStorage(Settings()) }
     single { UserSessionManager(get()) }
 
-    single<IUserRepository> { UserRepository("http://192.168.0.113:8000", get()) }
-    single<IExpansionRepository> { ExpansionRepository("http://192.168.0.113:8000", get()) }
-    single<IGenerationRepository> { GenerationRepository("http://192.168.0.113:8000", get()) }
-    single<IMarketRepository> { MarketRepository("http://192.168.0.113:8000", get()) }
+    single<IUserRepository> { UserRepository("http://127.0.0.1:8000", get()) }
+    single<IExpansionRepository> { ExpansionRepository("http://127.0.0.1:8000", get()) }
+    single<IGenerationRepository> { GenerationRepository("http://127.0.0.1:8000", get()) }
+    single<IMarketRepository> { MarketRepository("http://127.0.0.1:8000", get()) }
     single { UserMainViewModel(get(), get()) }
     single { createHttpClient(get()) }
 
     factory { LoginUseCase(get(), get()) }
+    factory { RegisterUserCase(get()) }
     factory { ListUsersUseCase(get()) }
     factory { DeleteUserUseCase(get()) }
     factory { ListExpansionUseCase(get()) }
@@ -80,6 +83,7 @@ val appModel = module{
     viewModel { (item: User?) -> UserFormViewModel(item = item) }
     viewModel { UserViewModel(get(), get()) }
     viewModel { LoginViewModel(get()) }
+    viewModel { RegisterViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { ExpansionViewModel(get()) }
     viewModel { GenerationViewModel(get()) }

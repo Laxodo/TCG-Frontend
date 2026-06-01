@@ -7,7 +7,5 @@ data class RegisterResponse (
     val id: String,
     val name: String,
     val email: String,
-    val username: String,
-    val password: String,
-    val confirm_password: String
+    val username: String
 )

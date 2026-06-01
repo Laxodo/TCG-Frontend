@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.viewmodel.koinViewModel
 import tcg.frontend.Routes
+import tcg.frontend.ui.register.Register
 import tcg.frontend.ui.administracion.AdminMain
 import tcg.frontend.ui.login.Login
 import tcg.frontend.ui.usuario.UserMain
@@ -23,7 +24,19 @@ fun Main() {
     ){
         composable(Routes.LOGIN) {
             Login({
-                    TODO("Wait to register form")
+                    navController.navigate(Routes.REGISTER) {
+                        launchSingleTop = true
+                    }
+            })
+        }
+
+        composable(Routes.REGISTER) {
+            Register({
+                navController.popBackStack()
+            }, {
+                navController.navigate(Routes.LOGIN) {
+                    launchSingleTop = true
+                }
             })
         }
 

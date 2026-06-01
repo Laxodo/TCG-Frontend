@@ -31,7 +31,7 @@ import tcg.frontend.infraestructura.entities.user.RegisterResponse
 import kotlin.runCatching
 
 class UserRepository(private val url: String, private val _client: HttpClient) : IUserRepository {
-    override suspend fun register(registerCommand: RegisterCommand): Result<RegisterResponse> {
+    override suspend fun register(registerCommand: RegisterCommand): Result<Unit> {
         return runCatching {
             val request = this._client.post("$url/users/signup") {
                 contentType(ContentType.Application.Json)
@@ -39,14 +39,11 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
             }
 
             when (request.status) {
-                HttpStatusCode.Created -> ""
+                HttpStatusCode.Created -> Unit
                 HttpStatusCode.BadRequest -> throw Exception("Usuario o contraseña no validos")
                 HttpStatusCode.Conflict -> throw Exception("Usuario o contraseña incorrecto")
                 else -> throw Exception(request.status.description)
             }
-
-            val item = request.body<RegisterResponse>()
-            item
         }
     }
 

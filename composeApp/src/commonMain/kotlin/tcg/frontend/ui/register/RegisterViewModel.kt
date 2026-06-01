@@ -1,6 +1,5 @@
-package tcg.frontend.ui.Register
+package tcg.frontend.ui.register
 
-import androidx.compose.runtime.currentComposer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +16,11 @@ class RegisterViewModel(
     private val _uiState = MutableStateFlow(RegisterState())
     val uiState: StateFlow<RegisterState> = _uiState.asStateFlow()
     var isFormValid = MutableStateFlow(false)
+
+    fun onNameChange(name: String) {
+        _uiState.value = _uiState.value.copy(name = name, nameErr = if (name.isBlank()) "El nombre no puede estar vacío." else null)
+        validateAll()
+    }
 
     fun onUsernameChange(username: String) {
         _uiState.value = _uiState.value.copy(username = username, usenameErr = if (username.isBlank()) "El username no puede estar vacío." else null)
@@ -49,10 +53,12 @@ class RegisterViewModel(
     fun validateAll() {
         val s = _uiState.value
         isFormValid.value =
+            s.name.isNotBlank() &&
             s.username.isNotBlank() &&
             s.email.isNotBlank() &&
             s.password.isNotBlank() &&
             s.confirm_password.isNotBlank() &&
+            s.nameErr == null &&
             s.usenameErr == null &&
             s.emailErr == null &&
             s.passwordErr == null &&
