@@ -7,8 +7,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tcg.frontend.aplicacion.generation.crear.CreateGenerationUseCase
 import tcg.frontend.aplicacion.generation.listar.ListGenerationUseCase
 import tcg.frontend.dominio.Generation
+import tcg.frontend.infraestructura.entities.generation.CreateGenerationRequest
 
 data class GenerationState(
     val isLoading: Boolean = false,
@@ -16,16 +18,17 @@ data class GenerationState(
 )
 
 class GenerationViewModel(
-    private val listGenerationUseCase: ListGenerationUseCase
+    private val listGenerationUseCase: ListGenerationUseCase,
+    private val createGenerationUseCase: CreateGenerationUseCase
 ): ViewModel() {
-    private val _items = MutableStateFlow<MutableList<Generation>>(mutableListOf())
+    private val _items = MutableStateFlow<List<Generation>>(emptyList())
     val items: StateFlow<List<Generation>> = _items.asStateFlow()
 
     private val _selected = MutableStateFlow<Generation?>(null)
-    val selected = _selected.asStateFlow()
+    val selected: StateFlow<Generation?> = _selected.asStateFlow()
 
     private val _state = MutableStateFlow(GenerationState())
-    val state = _state.asStateFlow()
+    val state: StateFlow<GenerationState> = _state.asStateFlow()
 
     init {
         refresh()
@@ -38,14 +41,32 @@ class GenerationViewModel(
     fun refresh() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
-            listGenerationUseCase.invoke()
-                .onSuccess { generations ->
-                    _state.update { it.copy(isLoading = false) }
-                    _items.value.clear()
-                    _items.value.addAll(generations)
-                }.onFailure { error ->
-                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
+
+            listGenerationUseCase().onSuccess { generations ->
+                _items.value = generations
+                _state.update { it.copy(isLoading = false) }
+            }.onFailure { error ->
+                _state.update {
+                    it.copy(isLoading = false, errorMessage = error.message)
                 }
+            }
+        }
+    }
+
+    fun createGeneration(name: String, year: Int) {
+        viewModelScope.launch {
+            createGenerationUseCase(
+                CreateGenerationRequest(
+                    name = name,
+                    year = year
+                )
+            ).onSuccess {
+                refresh()
+            }.onFailure {
+                _state.update {
+                    it.copy(errorMessage = it.errorMessage)
+                }
+            }
         }
     }
 }

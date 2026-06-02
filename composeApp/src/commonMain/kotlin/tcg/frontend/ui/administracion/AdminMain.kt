@@ -14,6 +14,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -37,6 +38,9 @@ import io.ktor.server.routing.Route
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import tcg.frontend.Routes
+import tcg.frontend.ui.administracion.generation.Generation
+import tcg.frontend.ui.administracion.generation.GenerationCreate
+import tcg.frontend.ui.administracion.generation.GenerationViewModel
 import tcg.frontend.ui.administracion.users.UserViewModel
 import tcg.frontend.ui.administracion.users.Users
 import tcg.frontend.ui.administracion.users.form.UserForm
@@ -53,6 +57,7 @@ fun AdminMain(
     val window = currentWindowAdaptiveInfo()
 
     val userViewModel: UserViewModel = koinViewModel()
+    val generationViewModel: GenerationViewModel = koinViewModel()
 
     adminMainViewModel.setOptions(
         listOf(
@@ -63,6 +68,14 @@ fun AdminMain(
                     }
                 },
                 "Usuarios"
+            ),
+            ItemOption(
+                Icons.Default.Style, {
+                    navController.navigate(Routes.GENERATIONS) {
+                        launchSingleTop = true
+                    }
+                },
+                "Generacion"
             ),
             ItemOption(
                 Icons.Default.Logout, {
@@ -117,6 +130,29 @@ fun AdminMain(
                 )
             }
 
+            composable(Routes.GENERATIONS) {
+                Generation(
+                    generationViewModel,
+                    onViewForm = {
+                        generationViewModel.setSelectedGeneration(it)
+                    },
+                    onCreate = {
+                        navController.navigate(Routes.GENERATION_CREATE)
+                    },
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Routes.GENERATION_CREATE) {
+                GenerationCreate(
+                    generationViewModel = generationViewModel,
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 

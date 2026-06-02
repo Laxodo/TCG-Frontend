@@ -4,7 +4,7 @@ import tcg.frontend.dominio.Generation
 import tcg.frontend.dominio.IGenerationRepository
 
 class ListGenerationUseCase(private val repository: IGenerationRepository) {
-    suspend fun invoke(): Result<List<Generation>> {
-        return repository.getGeneration()
+    suspend operator fun invoke(): Result<List<Generation>> {
+        return repository.getGenerations()
     }
 }

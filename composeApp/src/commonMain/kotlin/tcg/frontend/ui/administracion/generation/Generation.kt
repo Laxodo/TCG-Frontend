@@ -3,8 +3,10 @@ package tcg.frontend.ui.administracion.generation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -15,6 +17,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Undo
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -35,6 +38,7 @@ import tcg.frontend.dominio.Generation
 fun Generation(
     generationViewModel: GenerationViewModel,
     onViewForm: (Generation) -> Unit,
+    onCreate: () -> Unit,
     onBack: () -> Unit
 ) {
     val items by generationViewModel.items.collectAsState()
@@ -89,7 +93,11 @@ fun Generation(
                             },
                             modifier = Modifier.weight(1f).padding(8.dp)
                         )
+                        OutlinedButton(onClick = onCreate) {
+                            Icon(Icons.Default.Add, contentDescription = "Create")
+                        }
                     }
+                    Spacer(Modifier.height(12.dp))
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(
                             minSize = 512.dp
@@ -99,7 +107,7 @@ fun Generation(
                             GenerationForm(
                                 filteredItems[item],
                                 {
-                                    onViewForm(it)
+                                    onViewForm
                                 }
                             )
                         }

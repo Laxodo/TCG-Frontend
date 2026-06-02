@@ -3,27 +3,42 @@ package tcg.frontend.infraestructura.repository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import tcg.frontend.dominio.Generation
 import tcg.frontend.dominio.IGenerationRepository
-import tcg.frontend.infraestructura.entities.generation.GetGenerationResponse
+import tcg.frontend.infraestructura.entities.generation.CreateGenerationRequest
+import tcg.frontend.infraestructura.entities.generation.GetGenerationsResponse
 
 class GenerationRepository(private val url: String, private val _client: HttpClient): IGenerationRepository {
-    override suspend fun getGeneration(): Result<List<Generation>> {
+    override suspend fun getGenerations(): Result<List<Generation>> {
         return runCatching {
-            val request = this._client.get("$url/generation/")
+            val response = _client.get("$url/generation/")
 
-            val item = request.body<List<GetGenerationResponse>>()
-
-            if (request.status.value !in 200..< 300) {
-                throw Exception("${request.status.value}-${request.status.description}")
+            if(response.status.value !in 200 ..299) {
+                throw Exception("${response.status.value}-${response.status.description}")
             }
 
-            item.map { it->
+            val body = response.body<GetGenerationsResponse>()
+
+            body.generations.map {
                 Generation(
                     id = it.id,
                     name = it.name,
                     year = it.year
                 )
+            }
+        }
+    }
+
+    override suspend fun createGeneration(request: CreateGenerationRequest): Result<Unit> {
+        return runCatching {
+            val response = _client.post("$url/generation/") {
+                setBody(request)
+            }
+
+            if (response.status.value !in 200..299) {
+                throw Exception("${response.status.value}-${response.status.description}")
             }
         }
     }

@@ -42,6 +42,8 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import tcg.frontend.Routes
 import tcg.frontend.ui.MainViewModel
+import tcg.frontend.ui.administracion.generation.Generation
+import tcg.frontend.ui.administracion.generation.GenerationViewModel
 import tcg.frontend.ui.usuario.expansion.Expansion
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
 import tcg.frontend.ui.usuario.market.openbooster.OpenBooster
@@ -61,6 +63,7 @@ fun UserMain(
 ){
     val userMainViewModel: UserMainViewModel = koinViewModel()
     val expansionViewModel: ExpansionViewModel = koinViewModel()
+    val generationViewModel: GenerationViewModel = koinViewModel()
     val userCardGalleryDetailViewModel: UserCardGalleryDetailViewModel = koinViewModel()
     val openBoosterViewModel: OpenBoosterViewModel = koinViewModel()
     val navController = rememberNavController()
@@ -146,6 +149,17 @@ fun UserMain(
                     {
                         navController.popBackStack()
                     })
+            }
+
+            composable(Routes.GENERATIONS) {
+                Generation(generationViewModel, {
+                    generationViewModel.setSelectedGeneration(it)
+                    navController.navigate(Routes.GENERATIONS){
+                        launchSingleTop = true
+                    }
+                }, {
+                    navController.popBackStack()
+                })
             }
 
             // TODO: The gallery doesn't refresh when returning from the single card detail view.
