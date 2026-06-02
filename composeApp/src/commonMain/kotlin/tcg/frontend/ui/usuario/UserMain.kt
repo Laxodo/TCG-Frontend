@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Shop
-import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -44,9 +44,10 @@ import tcg.frontend.Routes
 import tcg.frontend.ui.MainViewModel
 import tcg.frontend.ui.usuario.expansion.Expansion
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
-import tcg.frontend.ui.usuario.market.openbooster.OpenBooster
-import tcg.frontend.ui.usuario.market.openbooster.OpenBoosterViewModel
-import tcg.frontend.ui.usuario.market.openbooster.view.OpenBoosterView
+import tcg.frontend.ui.usuario.market.Market
+import tcg.frontend.ui.usuario.openbooster.OpenBooster
+import tcg.frontend.ui.usuario.openbooster.OpenBoosterViewModel
+import tcg.frontend.ui.usuario.openbooster.view.OpenBoosterView
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollection
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGallery
@@ -74,6 +75,14 @@ fun UserMain(
         listOf(
             ItemOption(
                 Icons.Default.Shop, {
+                    navController.navigate(Routes.MARKET){
+                        launchSingleTop = true
+                    }
+                },
+                "Mercado"
+            ),
+            ItemOption(
+                Icons.Default.AttachMoney, {
                     navController.navigate(Routes.OPENBOOSTER){
                         launchSingleTop = true
                     }
@@ -104,6 +113,10 @@ fun UserMain(
         ){
             composable(Routes.ACCESS){
                 Access()
+            }
+
+            composable(Routes.MARKET){
+                Market()
             }
 
             composable(Routes.OPENBOOSTER) {
@@ -181,6 +194,15 @@ fun UserMain(
                         },
                         {
                             userCardGalleryViewModel.quickSell()
+                            userCardCollectionViewModel.refresh()
+                        },
+                        {
+                            userCardGalleryViewModel.refresh()
+                            userCardCollectionViewModel.refresh()
+                            userMainViewModel.refreshUser()
+                        },
+                        {
+                            userCardGalleryViewModel.setSelectedUsersCards(it)
                         }
                     )
                 } else {
@@ -191,26 +213,35 @@ fun UserMain(
                         },
                         {
                             screenState = !screenState
+                        },
+                        {
+                            userCardGalleryViewModel.refresh()
+                            userCardCollectionViewModel.refresh()
+                            userMainViewModel.refreshUser()
                         }
                     )
                 }
             }
 
             composable(Routes.USERCARD){
+                expansionViewModel.getExpansionCards()
                 UserCardGalleryDetail(
                     userCardGalleryDetailViewModel,
+                    expansionViewModel,
                     {
                         userCardGalleryDetailViewModel.quickSell()
+                        navController.popBackStack()
+                    },
+                    {
+                        userCardGalleryDetailViewModel.sellCard()
                         navController.popBackStack()
                     },
                     {
                         TODO("The function has not been implemented yet.")
                     },
                     {
-                        TODO("The function has not been implemented yet.")
-                    },
-                    {
-                        TODO("The function has not been implemented yet.")
+                        userCardGalleryDetailViewModel.exchangeCard()
+                        navController.popBackStack()
                     },
                     {
                         navController.popBackStack()

@@ -1,4 +1,4 @@
-package tcg.frontend.ui.usuario.market.openbooster
+package tcg.frontend.ui.usuario.openbooster
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,11 +9,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tcg.frontend.aplicacion.market.openboosted.OpenBoosterCommand
 import tcg.frontend.aplicacion.market.openboosted.OpenBoosterUseCase
-import tcg.frontend.aplicacion.usercard.listCollection.UserCardCollectionDTO
 import tcg.frontend.dominio.Card
-import tcg.frontend.dominio.Expansion
 import tcg.frontend.ui.usuario.UserMainViewModel
-import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionState
 
 data class OpenBoosterState(
     val isLoading: Boolean = false,

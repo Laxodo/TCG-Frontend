@@ -1,4 +1,4 @@
-package tcg.frontend.ui.usuario.market.openbooster
+package tcg.frontend.ui.usuario.openbooster
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
@@ -31,9 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import tcg.frontend.dominio.Expansion
-import tcg.frontend.dominio.User
 import tcg.frontend.ui.usuario.UserMainViewModel
-import tcg.frontend.ui.usuario.expansion.ExpansionCard
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
 
 @Composable

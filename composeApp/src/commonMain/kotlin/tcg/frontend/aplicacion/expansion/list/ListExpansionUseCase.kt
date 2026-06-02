@@ -1,4 +1,4 @@
-package tcg.frontend.aplicacion.expansion.listar
+package tcg.frontend.aplicacion.expansion.list
 
 import tcg.frontend.dominio.Expansion
 import tcg.frontend.dominio.IExpansionRepository

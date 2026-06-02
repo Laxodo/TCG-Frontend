@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Redo
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.SwapHorizontalCircle
 import androidx.compose.material3.ButtonDefaults
@@ -50,7 +51,9 @@ fun UserCardGallery(
     onBack: () -> Unit,
     onChangeView: () -> Unit,
     onChangeMode: () -> Unit,
-    onQuickSell: () -> Unit
+    onQuickSell: () -> Unit,
+    onRefresh: () -> Unit,
+    onSelectAll: (List<UserCardDTO>) -> Unit
 ){
     val items by userCardGalleryViewModel.items.collectAsState()
     var searchText by remember { mutableStateOf("")}
@@ -124,6 +127,17 @@ fun UserCardGallery(
                                         .size(ButtonDefaults.IconSize)
                                 )
                             }
+                            OutlinedButton(
+                                onClick = { onSelectAll(filteredItems) },
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.SelectAll,
+                                    contentDescription = "Quick shell",
+                                    modifier = Modifier
+                                        .size(ButtonDefaults.IconSize)
+                                )
+                            }
                         }
                         OutlinedButton(
                             onClick = {
@@ -150,7 +164,7 @@ fun UserCardGallery(
                             )
                         }
                         OutlinedButton(
-                            onClick = { userCardGalleryViewModel.refresh() },
+                            onClick = onRefresh,
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                         ) {
                             Icon(

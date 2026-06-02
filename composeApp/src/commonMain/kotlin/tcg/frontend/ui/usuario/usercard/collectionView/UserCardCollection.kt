@@ -41,7 +41,8 @@ import androidx.compose.ui.unit.dp
 fun UserCardCollection(
     userCardCollectionViewModel: UserCardCollectionViewModel,
     onBack: () -> Unit,
-    onChangeView: () -> Unit
+    onChangeView: () -> Unit,
+    onRefresh: () -> Unit
 ){
     val items by userCardCollectionViewModel.items.collectAsState()
     var searchText by remember { mutableStateOf("")}
@@ -114,7 +115,7 @@ fun UserCardCollection(
                             )
                         }
                         OutlinedButton(
-                            onClick = { userCardCollectionViewModel.refresh() },
+                            onClick = onRefresh,
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                         ) {
                             Icon(

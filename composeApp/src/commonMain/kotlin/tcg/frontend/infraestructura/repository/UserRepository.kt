@@ -23,7 +23,9 @@ import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
 import tcg.frontend.dominio.UserCard
 import tcg.frontend.infraestructura.entities.user.GetUserByIdResponse
+import tcg.frontend.infraestructura.entities.user.GetUserCardListResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCardResponse
+import tcg.frontend.infraestructura.entities.user.GetUserCollectionListResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCollectionResponse
 import tcg.frontend.infraestructura.entities.user.GetUserResponse
 import tcg.frontend.infraestructura.entities.user.LoginResponse
@@ -138,12 +140,12 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
                     "&offset=${listUserCardCommand.offset}"
             )
 
-            val item = request.body<List<GetUserCardResponse>>()
+            val item = request.body<GetUserCardListResponse>()
 
             if(request.status.value !in 200..<300)
                 throw Exception("${request.status.value}-${request.status.description}")
 
-            item.associate { it ->
+            item.cards.associate { it ->
                 val card = Card(
                     id = it.card.id,
                     idExpansion = it.card.id_expansion,
@@ -178,12 +180,12 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
 
             val responseString = request.body<String>()
             println("JSON REAL RECIBIDO: $responseString")
-            val item = request.body<List<GetUserCollectionResponse>>()
+            val item = request.body<GetUserCollectionListResponse>()
 
             if(request.status.value !in 200..<300)
                 throw Exception("${request.status.value}-${request.status.description}")
 
-            item.map { it ->
+            item.collection.map { it ->
                 UserCardCollectionDTO(
                     idCard = it.id_card,
                     cardNumber = it.card_number,

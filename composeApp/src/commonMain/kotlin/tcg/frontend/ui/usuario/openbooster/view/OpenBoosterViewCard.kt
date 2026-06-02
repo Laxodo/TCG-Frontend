@@ -1,18 +1,13 @@
-package tcg.frontend.ui.usuario.usercard.galleryView
+package tcg.frontend.ui.usuario.openbooster.view
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,16 +22,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import tcg.frontend.aplicacion.usercard.listar.UserCardDTO
+import tcg.frontend.dominio.Card
+import tcg.frontend.ui.usuario.openbooster.OpenBoosterViewModel
+
 
 @Composable
-fun UserCardGalleryCard(
-    userCardGalleryViewModel: UserCardGalleryViewModel,
-    item: UserCardDTO,
-    onView: (UserCardDTO) -> Unit
+fun OpenBoosterViewCard (
+    openBoosterViewModel: OpenBoosterViewModel,
+    item: Card
 ) {
-    val items by userCardGalleryViewModel.selectedItems.collectAsState()
+    val items by openBoosterViewModel.items.collectAsState()
     val active = items.contains(item)
+    var image by remember { mutableStateOf(true) }
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -47,9 +44,7 @@ fun UserCardGalleryCard(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         ),
         border = if (active) BorderStroke(1.dp, Color.Green) else BorderStroke(1.dp, MaterialTheme.colorScheme.secondary),
-        onClick = {
-            onView(item)
-            },
+        onClick = { image = !image }
     ) {
         Column(
             modifier = Modifier
@@ -59,46 +54,29 @@ fun UserCardGalleryCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ){
-                    AsyncImage(
-                        model = item.card.frontcard,
-                        contentDescription = "Image",
-                    )
-                    if (item.userCard.sold){
-                        Icon(
-                            imageVector = Icons.Default.MonetizationOn,
-                            contentDescription = "Vendido",
-                            tint = Color(0xFF85BB65),
-                            modifier = Modifier.size(60.dp)
-                        )
-                    }
-                }
+                AsyncImage(
+                    model = if(image) item.frontcard else item.backcard,
+                    contentDescription = "Image",
+                )
                 Text(
-                    text = item.card.name,
+                    text = item.name,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = item.userCard.psa?.toString() ?: "Sin gradear",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = item.rarity,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = item.card.rarity,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = item.price.toString() + "€",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = item.card.cardNumber.toString(),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = item.userCard.price.toString() + "€",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = "Nº " + item.cardNumber.toString(),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

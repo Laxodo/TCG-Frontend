@@ -51,6 +51,14 @@ class UserCardGalleryViewModel(
         }
     }
 
+    fun setSelectedUsersCards(items: List<UserCardDTO>){
+        if(_selectedItems.value.containsAll(items)){
+            _selectedItems.value = mutableListOf()
+        }else{
+            _selectedItems.value = (_selectedItems.value + items) as MutableList<UserCardDTO>
+        }
+    }
+
     fun changeSellMode(){
         _sellMode.value = !_sellMode.value
         if (!_sellMode.value){

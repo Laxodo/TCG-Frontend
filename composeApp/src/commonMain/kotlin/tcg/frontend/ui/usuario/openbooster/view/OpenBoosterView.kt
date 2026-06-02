@@ -1,11 +1,11 @@
-package tcg.frontend.ui.usuario.market.openbooster.view
+package tcg.frontend.ui.usuario.openbooster.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -32,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import tcg.frontend.ui.usuario.UserMainViewModel
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
-import tcg.frontend.ui.usuario.market.openbooster.OpenBoosterViewModel
+import tcg.frontend.ui.usuario.openbooster.OpenBoosterViewModel
 
 @Composable
 fun OpenBoosterView(
@@ -84,16 +83,20 @@ fun OpenBoosterView(
                             )
                         }
                     }
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(
-                            minSize = 512.dp
-                        )
+                    Box(
+                        modifier = Modifier.fillMaxHeight(0.95f)
                     ) {
-                        items(filteredItems.size) { item ->
-                            OpenBoosterViewCard(
-                                openBoosterViewModel,
-                                filteredItems[item]
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(
+                                minSize = 512.dp
                             )
+                        ) {
+                            items(filteredItems.size) { item ->
+                                OpenBoosterViewCard(
+                                    openBoosterViewModel,
+                                    filteredItems[item]
+                                )
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))

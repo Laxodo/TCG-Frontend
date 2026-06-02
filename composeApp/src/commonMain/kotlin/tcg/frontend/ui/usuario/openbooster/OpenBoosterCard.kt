@@ -1,4 +1,4 @@
-package tcg.frontend.ui.usuario.market.openbooster
+package tcg.frontend.ui.usuario.openbooster
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

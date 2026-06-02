@@ -8,9 +8,15 @@ import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import tcg.frontend.aplicacion.UserSessionManager
-import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
+import tcg.frontend.aplicacion.expansion.list.ListExpansionUseCase
+import tcg.frontend.aplicacion.expansion.listcards.ListCardsExpansionUseCase
 import tcg.frontend.aplicacion.users.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.login.LoginUseCase
+import tcg.frontend.aplicacion.market.offers.buy.BuyOfferUseCase
+import tcg.frontend.aplicacion.market.offers.cancel.CancelOfferUseCase
+import tcg.frontend.aplicacion.market.offers.exchange.ExchangeCardUseCase
+import tcg.frontend.aplicacion.market.offers.list.ListOffersUseCase
+import tcg.frontend.aplicacion.market.offers.sell.SellOfferUseCase
 import tcg.frontend.aplicacion.market.openboosted.OpenBoosterUseCase
 import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
 import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUseCase
@@ -34,12 +40,16 @@ import tcg.frontend.ui.administracion.users.form.UserFormViewModel
 import tcg.frontend.ui.login.LoginViewModel
 import tcg.frontend.ui.usuario.UserMainViewModel
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
-import tcg.frontend.ui.usuario.market.openbooster.OpenBoosterViewModel
+import tcg.frontend.ui.usuario.market.MarketViewModel
+import tcg.frontend.ui.usuario.market.canceloffer.CancelOffersViewModel
+import tcg.frontend.ui.usuario.market.exchangeoffers.ExchangeOffersViewModel
+import tcg.frontend.ui.usuario.market.selloffers.SellOffersViewModel
+import tcg.frontend.ui.usuario.openbooster.OpenBoosterViewModel
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
 
-val appModel = module{
+val appModel = module {
 
     single {
         HttpClient() {
@@ -71,18 +81,38 @@ val appModel = module{
     factory { QuickSellUseCase(get()) }
     factory { OpenBoosterUseCase(get()) }
     factory { GetUserUseCase(get()) }
+    factory { ListOffersUseCase(get()) }
+    factory { BuyOfferUseCase(get()) }
+    factory { SellOfferUseCase(get()) }
+    factory { CancelOfferUseCase(get()) }
+    factory { ListCardsExpansionUseCase(get()) }
+    factory { ExchangeCardUseCase(get()) }
 
     viewModel { AdminMainViewModel() }
     viewModel { (item: User?) -> UserFormViewModel(item = item) }
     viewModel { UserViewModel(get(), get(), get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
-    viewModel { ExpansionViewModel(get()) }
+    viewModel { ExpansionViewModel(get(), get()) }
     viewModel { OpenBoosterViewModel(get(), get()) }
-    viewModel { (id: Int, idExpansion: Int) -> UserCardGalleryViewModel(idUser = id, idExpansion = idExpansion, listUserCardUseCase = get(), quickSellUseCase = get(), userMainViewModel = get()) }
-    viewModel { (id: Int, idExpansion: Int) -> UserCardCollectionViewModel(
-        idUser = id, idExpansion = idExpansion,
-        listUserCardCollectionUseCase = get()
-    ) }
-    viewModel { UserCardGalleryDetailViewModel(get(), get(), null) }
+    viewModel { (id: Int, idExpansion: Int) ->
+        UserCardGalleryViewModel(
+            idUser = id,
+            idExpansion = idExpansion,
+            listUserCardUseCase = get(),
+            quickSellUseCase = get(),
+            userMainViewModel = get()
+        )
+    }
+    viewModel { (id: Int, idExpansion: Int) ->
+        UserCardCollectionViewModel(
+            idUser = id, idExpansion = idExpansion,
+            listUserCardCollectionUseCase = get()
+        )
+    }
+    viewModel { UserCardGalleryDetailViewModel(get(), get(), get(),get(), null) }
+    viewModel { SellOffersViewModel(get(), get(), get()) }
+    viewModel { MarketViewModel() }
+    viewModel { CancelOffersViewModel(get(), get(), get()) }
+    viewModel { ExchangeOffersViewModel(get(), get(), get()) }
 }

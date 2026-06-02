@@ -3,6 +3,11 @@ package tcg.frontend.infraestructura.entities.market
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class OpenBoosterListResponse(
+    val booster: List<OpenBoosterResponse>
+)
+
+@Serializable
 data class OpenBoosterResponse(
     val id: Int,
     val id_expansion: Int,
