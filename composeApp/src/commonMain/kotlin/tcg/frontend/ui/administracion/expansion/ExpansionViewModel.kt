@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tcg.frontend.aplicacion.expansion.crear.CreateExpansionUseCase
+import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
 import tcg.frontend.dominio.Expansion
+import tcg.frontend.infraestructura.entities.expansion.CreateExpansionRequest
 
 data class ExpansionState(
     val isLoading: Boolean = false,
@@ -16,36 +18,59 @@ data class ExpansionState(
 )
 
 class ExpansionViewModel (
+    private val listExpansionUseCase: ListExpansionUseCase,
     private val createExpansionUseCase: CreateExpansionUseCase
 ): ViewModel() {
-    private val _items = MutableStateFlow<Expansion>()
-    val items: StateFlow<Expansion> = _items.asStateFlow()
+    private val _items = MutableStateFlow<List<Expansion>>(emptyList())
+    val items = _items.asStateFlow()
 
     private val _selected = MutableStateFlow<Expansion?>(null)
     val selected = _selected.asStateFlow()
 
+    private val _generationId = MutableStateFlow<Int?>(null)
+
     private val _state = MutableStateFlow(ExpansionState())
     val state = _state.asStateFlow()
-
-    init {
-        refresh()
-    }
 
     fun setSelectedExpansion(item: Expansion?) {
         _selected.value = item
     }
 
+    fun setGeneration(generationId: Int) {
+        _generationId.value = generationId
+        refresh()
+    }
+
     fun refresh() {
+        val generationId = _generationId.value ?: return
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
-            createExpansionUseCase.invoke()
-                .onSuccess { expansions ->
-                    _state.update { it.copy(isLoading = false) }
-                    _items.value.clear()
-                    _items.value.addAll(expansions)
-                }.onFailure { error ->
-                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
+
+            listExpansionUseCase(generationId).onSuccess { expansions ->
+                _items.value = expansions
+                _state.update { it.copy(isLoading = false) }
+            }.onFailure { error ->
+                _state.update {
+                    it.copy(isLoading = false, errorMessage = error.message)
                 }
+            }
+        }
+    }
+
+    fun createExpansion(request: CreateExpansionRequest) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, errorMessage = null) }
+
+            createExpansionUseCase(
+                request
+            ).onSuccess {
+                refresh()
+                _state.update { it.copy(isLoading = false) }
+            }.onFailure {
+                _state.update {
+                    it.copy(errorMessage = it.errorMessage)
+                }
+            }
         }
     }
 }

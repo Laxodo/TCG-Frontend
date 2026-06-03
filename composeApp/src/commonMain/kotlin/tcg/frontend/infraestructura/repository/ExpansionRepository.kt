@@ -8,48 +8,47 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import tcg.frontend.aplicacion.expansion.crear.CreateExpansionCommand
 import tcg.frontend.dominio.Expansion
 import tcg.frontend.dominio.IExpansionRepository
 import tcg.frontend.infraestructura.entities.expansion.CreateExpansionRequest
 import tcg.frontend.infraestructura.entities.expansion.GetExpansionResponse
+import tcg.frontend.infraestructura.entities.expansion.GetExpansionsResponse
 
 class ExpansionRepository(private val url: String, private val _client: HttpClient): IExpansionRepository {
-    override suspend fun getExpansion(): Result<List<Expansion>> {
+    override suspend fun getExpansionByGeneration(generationId: Int): Result<List<Expansion>> {
         return runCatching {
-            val request = this._client.get("$url/expansions/")
+            val response = _client.get("$url/generation/$generationId/expansions")
 
-            val item = request.body<List<GetExpansionResponse>>()
-
-            if (request.status.value !in 200 ..< 300){
-                throw Exception("${request.status.value}-${request.status.description}")
+            if (response.status.value !in 200 .. 299) {
+                throw Exception("${response.status.value}-${response.status.description}")
             }
 
-            item.map { it ->
+            val body = response.body<GetExpansionsResponse>()
+
+            body.expansions.map { expansion ->
                 Expansion(
-                    id = it.id,
-                    idGeneration = it.id_generacion,
-                    name = it.name,
-                    price = it.price,
-                    year = it.year
+                    id = expansion.id,
+                    idGeneration = expansion.id_generacion,
+                    name = expansion.name,
+                    price = expansion.price,
+                    year = expansion.year
                 )
             }
         }
     }
 
-    override suspend fun createExpansion(createExpansionCommand: CreateExpansionCommand): Result<CreateExpansionRequest> {
+    override suspend fun createExpansion(request: CreateExpansionRequest): Result<Unit> {
         return runCatching {
-            val request = this._client.post("$url/expansions/") {
-                contentType(ContentType.Application.Json)
-                setBody(createExpansionCommand)
-            }
+            val response = _client.post("$url/expansions/") {
+                    contentType(ContentType.Application.Json)
+                    setBody(request)
+                }
 
-            if(request.status.value !in 201  ..< 300) {
-                throw Exception("${request.status.value}-${request.status.description}")
+            if (response.status.value !in 200..299) {
+                throw Exception(
+                    "${response.status.value} - ${response.status.description}"
+                )
             }
-
-            val item = request.body<CreateExpansionRequest>()
-            item
         }
     }
 }

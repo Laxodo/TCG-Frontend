@@ -38,6 +38,11 @@ import io.ktor.server.routing.Route
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import tcg.frontend.Routes
+import tcg.frontend.infraestructura.entities.expansion.CreateExpansionRequest
+import tcg.frontend.ui.administracion.expansion.Expansion
+import tcg.frontend.ui.administracion.expansion.ExpansionViewModel
+import tcg.frontend.ui.administracion.expansion.form.ExpansionForm
+import tcg.frontend.ui.administracion.expansion.form.ExpansionFormViewModel
 import tcg.frontend.ui.administracion.generation.Generation
 import tcg.frontend.ui.administracion.generation.GenerationCreate
 import tcg.frontend.ui.administracion.generation.GenerationViewModel
@@ -58,6 +63,8 @@ fun AdminMain(
 
     val userViewModel: UserViewModel = koinViewModel()
     val generationViewModel: GenerationViewModel = koinViewModel()
+    val expansionViewModel: ExpansionViewModel = koinViewModel()
+    val expansionFormViewModel: ExpansionFormViewModel = koinViewModel()
 
     adminMainViewModel.setOptions(
         listOf(
@@ -135,6 +142,8 @@ fun AdminMain(
                     generationViewModel,
                     onViewForm = {
                         generationViewModel.setSelectedGeneration(it)
+                        expansionViewModel.setGeneration(it.id)
+                        navController.navigate(Routes.EXPANSIONS)
                     },
                     onCreate = {
                         navController.navigate(Routes.GENERATION_CREATE)
@@ -149,6 +158,38 @@ fun AdminMain(
                 GenerationCreate(
                     generationViewModel = generationViewModel,
                     onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Routes.EXPANSIONS) {
+                Expansion(
+                    expansionViewModel = expansionViewModel,
+                    onCreate = {
+                        navController.navigate(Routes.EXPANSION_CREATE)
+                    },
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Routes.EXPANSION_CREATE) {
+                ExpansionForm(
+                    expansionFormViewModel = expansionFormViewModel,
+                    onClose = {
+                        navController.popBackStack()
+                    },
+                    onConfirm = { state ->
+                        expansionViewModel.createExpansion(
+                            CreateExpansionRequest(
+                                id_generacion = generationViewModel.selected.value!!.id,
+                                name = state.name,
+                                price = state.price.toDouble(),
+                                year = state.year.toInt()
+                            )
+                        )
                         navController.popBackStack()
                     }
                 )

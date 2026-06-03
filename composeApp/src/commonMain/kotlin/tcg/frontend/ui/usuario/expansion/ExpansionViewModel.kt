@@ -24,6 +24,8 @@ class ExpansionViewModel(
     private val _selected = MutableStateFlow<Expansion?>(null)
     val selected = _selected.asStateFlow()
 
+    private var generationId: Int? = null
+
     private val _state = MutableStateFlow(ExpansionState())
     val state = _state.asStateFlow()
 
@@ -31,21 +33,30 @@ class ExpansionViewModel(
         refresh()
     }
 
+    fun loadGeneration(id: Int) {
+        generationId = id
+        refresh()
+    }
+
     fun setSelectedExpansion(item: Expansion?) {
         _selected.value = item
     }
 
-    fun refresh(){
+    fun refresh() {
+        val id = generationId ?: return
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
-            listExpansionUseCase.invoke()
-                .onSuccess { expansions ->
+            listExpansionUseCase(id).onSuccess { expansions ->
                     _state.update { it.copy(isLoading = false) }
                     _items.value.clear()
                     _items.value.addAll(expansions)
-                }
-                .onFailure { error ->
-                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
+                }.onFailure { error ->
+                    _state.update {
+                        it.copy(
+                            errorMessage = error.message,
+                            isLoading = false
+                        )
+                    }
                 }
         }
     }

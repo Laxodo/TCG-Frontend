@@ -7,6 +7,7 @@ object Routes {
     const val USERS = "users"
     const val USER = "user"
     const val EXPANSIONS = "expansions"
+    const val EXPANSION_CREATE = "expansion_create"
     const val GENERATIONS = "generations"
     const val GENERATION_CREATE = "generation_create"
     const val USERCARDS = "usercards"

@@ -107,7 +107,7 @@ fun Generation(
                             GenerationForm(
                                 filteredItems[item],
                                 {
-                                    onViewForm
+                                    onViewForm(filteredItems[item])
                                 }
                             )
                         }

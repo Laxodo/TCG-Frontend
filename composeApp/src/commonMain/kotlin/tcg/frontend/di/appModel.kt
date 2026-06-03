@@ -8,7 +8,9 @@ import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import tcg.frontend.aplicacion.UserSessionManager
+import tcg.frontend.aplicacion.expansion.crear.CreateExpansionUseCase
 import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
+import tcg.frontend.aplicacion.generation.crear.CreateGenerationUseCase
 import tcg.frontend.aplicacion.generation.listar.ListGenerationUseCase
 import tcg.frontend.aplicacion.usuarios.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.login.LoginUseCase
@@ -33,11 +35,13 @@ import tcg.frontend.infraestructura.repository.UserRepository
 import tcg.frontend.ui.MainViewModel
 import tcg.frontend.ui.register.RegisterViewModel
 import tcg.frontend.ui.administracion.AdminMainViewModel
+import tcg.frontend.ui.administracion.expansion.form.ExpansionFormViewModel
 import tcg.frontend.ui.administracion.users.UserViewModel
+import tcg.frontend.ui.usuario.expansion.ExpansionViewModel as UserExpansionViewModel
+import tcg.frontend.ui.administracion.expansion.ExpansionViewModel as AdminExpansionViewModel
 import tcg.frontend.ui.administracion.users.form.UserFormViewModel
 import tcg.frontend.ui.login.LoginViewModel
 import tcg.frontend.ui.usuario.UserMainViewModel
-import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
 import tcg.frontend.ui.administracion.generation.GenerationViewModel
 import tcg.frontend.ui.usuario.market.openbooster.OpenBoosterViewModel
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
@@ -72,6 +76,8 @@ val appModel = module{
     factory { ListUsersUseCase(get()) }
     factory { DeleteUserUseCase(get()) }
     factory { ListExpansionUseCase(get()) }
+    factory { CreateExpansionUseCase(get()) }
+    factory { CreateGenerationUseCase(get()) }
     factory { ListGenerationUseCase(get()) }
     factory { ListUserCardUseCase(get()) }
     factory { ListUserCardCollectionUseCase(get()) }
@@ -85,8 +91,10 @@ val appModel = module{
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get()) }
     viewModel { MainViewModel(get()) }
-    viewModel { ExpansionViewModel(get()) }
-    viewModel { GenerationViewModel(get()) }
+    viewModel { ExpansionFormViewModel() }
+    viewModel { UserExpansionViewModel(get()) }
+    viewModel { AdminExpansionViewModel(get(), get()) }
+    viewModel { GenerationViewModel(get(), get()) }
     viewModel { OpenBoosterViewModel(get(), get()) }
     viewModel { (id: Int, idExpansion: Int) -> UserCardGalleryViewModel(idUser = id, idExpansion = idExpansion, listUserCardUseCase = get(), quickSellUseCase = get(), userMainViewModel = get()) }
     viewModel { (id: Int, idExpansion: Int) -> UserCardCollectionViewModel(
