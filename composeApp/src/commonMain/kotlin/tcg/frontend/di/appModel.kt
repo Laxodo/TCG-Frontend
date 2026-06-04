@@ -12,11 +12,12 @@ import tcg.frontend.aplicacion.expansion.list.ListExpansionUseCase
 import tcg.frontend.aplicacion.expansion.listcards.ListCardsExpansionUseCase
 import tcg.frontend.aplicacion.users.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.login.LoginUseCase
+import tcg.frontend.aplicacion.market.grade.GradeCardUseCase
 import tcg.frontend.aplicacion.market.offers.buy.BuyOfferUseCase
 import tcg.frontend.aplicacion.market.offers.cancel.CancelOfferUseCase
 import tcg.frontend.aplicacion.market.offers.exchange.ExchangeCardUseCase
 import tcg.frontend.aplicacion.market.offers.list.ListOffersUseCase
-import tcg.frontend.aplicacion.market.offers.sell.SellOfferUseCase
+import tcg.frontend.aplicacion.market.sell.SellOfferUseCase
 import tcg.frontend.aplicacion.market.openboosted.OpenBoosterUseCase
 import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
 import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUseCase
@@ -87,6 +88,7 @@ val appModel = module {
     factory { CancelOfferUseCase(get()) }
     factory { ListCardsExpansionUseCase(get()) }
     factory { ExchangeCardUseCase(get()) }
+    factory { GradeCardUseCase(get()) }
 
     viewModel { AdminMainViewModel() }
     viewModel { (item: User?) -> UserFormViewModel(item = item) }
@@ -110,7 +112,7 @@ val appModel = module {
             listUserCardCollectionUseCase = get()
         )
     }
-    viewModel { UserCardGalleryDetailViewModel(get(), get(), get(),get(), null) }
+    viewModel { UserCardGalleryDetailViewModel(get(), get(), get(),get(), get(), null) }
     viewModel { SellOffersViewModel(get(), get(), get()) }
     viewModel { MarketViewModel() }
     viewModel { CancelOffersViewModel(get(), get(), get()) }

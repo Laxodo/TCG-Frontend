@@ -27,6 +27,7 @@ import tcg.frontend.infraestructura.entities.user.GetUserCardListResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCardResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCollectionListResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCollectionResponse
+import tcg.frontend.infraestructura.entities.user.GetUserListResponse
 import tcg.frontend.infraestructura.entities.user.GetUserResponse
 import tcg.frontend.infraestructura.entities.user.LoginResponse
 import tcg.frontend.infraestructura.entities.user.UpdateUserRequest
@@ -55,12 +56,12 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
         return runCatching {
             val request = this._client.get("$url/users/")
 
-            val item = request.body<List<GetUserResponse>>()
+            val item = request.body<GetUserListResponse>()
 
             if(request.status.value !in 200..<300)
                 throw Exception("${request.status.value}-${request.status.description}")
 
-            item.map { it ->
+            item.users.map { it ->
                 User(
                     id = it.id.toInt(),
                     name = it.name,

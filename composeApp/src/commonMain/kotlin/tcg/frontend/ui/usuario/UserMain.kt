@@ -237,7 +237,7 @@ fun UserMain(
                         navController.popBackStack()
                     },
                     {
-                        TODO("The function has not been implemented yet.")
+                        userCardGalleryDetailViewModel.gradeCard()
                     },
                     {
                         userCardGalleryDetailViewModel.exchangeCard()

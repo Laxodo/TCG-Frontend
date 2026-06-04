@@ -114,6 +114,7 @@ fun AdminMain(
                     },
                     {
                         userViewModel.updateUser(it)
+                        navController.popBackStack()
                     }
                 )
             }

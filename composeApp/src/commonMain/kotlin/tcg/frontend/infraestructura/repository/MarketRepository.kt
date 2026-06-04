@@ -6,11 +6,12 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import tcg.frontend.aplicacion.market.grade.GradeCardCommand
 import tcg.frontend.aplicacion.market.offers.buy.BuyOfferCommand
 import tcg.frontend.aplicacion.market.offers.cancel.CancelOfferCommand
 import tcg.frontend.aplicacion.market.offers.exchange.ExchangeCardCommand
 import tcg.frontend.aplicacion.market.offers.list.ListOffersCommand
-import tcg.frontend.aplicacion.market.offers.sell.SellOfferCommand
+import tcg.frontend.aplicacion.market.sell.SellOfferCommand
 import tcg.frontend.aplicacion.market.openboosted.OpenBoosterCommand
 import tcg.frontend.aplicacion.market.quicksell.QuickSellCommand
 import tcg.frontend.dominio.Card
@@ -18,8 +19,8 @@ import tcg.frontend.dominio.IMarketRepository
 import tcg.frontend.dominio.Offer
 import tcg.frontend.infraestructura.entities.market.ExchangeCardRequest
 import tcg.frontend.infraestructura.entities.market.GetOffersResponse
+import tcg.frontend.infraestructura.entities.market.GradeCardResponse
 import tcg.frontend.infraestructura.entities.market.OpenBoosterListResponse
-import tcg.frontend.infraestructura.entities.market.OpenBoosterResponse
 import tcg.frontend.infraestructura.entities.market.PostQuickSell
 import tcg.frontend.infraestructura.entities.market.QuickSellResponse
 import tcg.frontend.infraestructura.entities.market.SellCardResponse
@@ -124,6 +125,19 @@ class MarketRepository(private val url: String, private val _client: HttpClient)
 
             if(request.status.value !in 200..<300)
                 throw Exception("${request.status.value}-${request.status.description}")
+        }
+    }
+
+    override suspend fun gradeCard(gradeCardCommand: GradeCardCommand): Result<Int> {
+        return runCatching {
+            val request = _client.post("$url/market/cards/${gradeCardCommand.id}/grade")
+
+            if(request.status.value !in 200..<300)
+                throw Exception("${request.status.value}-${request.status.description}")
+
+            val item = request.body<GradeCardResponse>()
+
+            item.grade
         }
     }
 

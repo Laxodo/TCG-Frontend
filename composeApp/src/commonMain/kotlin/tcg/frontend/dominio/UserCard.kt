@@ -5,6 +5,6 @@ data class UserCard(
     val idUser: Int,
     val idCard: Int,
     val price: Float,
-    val psa: Int?,
+    var psa: Int?,
     val sold: Boolean
 )

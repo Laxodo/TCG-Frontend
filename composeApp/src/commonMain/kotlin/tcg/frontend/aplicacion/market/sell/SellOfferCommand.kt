@@ -1,4 +1,4 @@
-package tcg.frontend.aplicacion.market.offers.sell
+package tcg.frontend.aplicacion.market.sell
 
 import kotlinx.serialization.Serializable
 

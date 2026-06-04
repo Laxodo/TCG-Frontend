@@ -7,10 +7,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tcg.frontend.aplicacion.market.grade.GradeCardCommand
+import tcg.frontend.aplicacion.market.grade.GradeCardUseCase
 import tcg.frontend.aplicacion.market.offers.exchange.ExchangeCardCommand
 import tcg.frontend.aplicacion.market.offers.exchange.ExchangeCardUseCase
-import tcg.frontend.aplicacion.market.offers.sell.SellOfferCommand
-import tcg.frontend.aplicacion.market.offers.sell.SellOfferUseCase
+import tcg.frontend.aplicacion.market.sell.SellOfferCommand
+import tcg.frontend.aplicacion.market.sell.SellOfferUseCase
 import tcg.frontend.aplicacion.market.quicksell.QuickSellCommand
 import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
 import tcg.frontend.aplicacion.usercard.listar.UserCardDTO
@@ -29,6 +31,7 @@ data class UserCardDetailState(
 )
 class UserCardGalleryDetailViewModel(
     private val userMainViewModel: UserMainViewModel,
+    private val gradeCardUseCase: GradeCardUseCase,
     private val exchangeCardUseCase: ExchangeCardUseCase,
     private val quickSellUseCase: QuickSellUseCase,
     private val sellOfferUseCase: SellOfferUseCase,
@@ -105,6 +108,21 @@ class UserCardGalleryDetailViewModel(
             .onFailure { error ->
                 _state.update { it.copy(errorMessage = error.message, isLoading = false) }
             }
+        }
+    }
+
+    fun gradeCard(){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, errorMessage = null) }
+            gradeCardUseCase.invoke(GradeCardCommand(_usercard.value?.userCard?.id ?: -999))
+                .onSuccess { grade ->
+                    _usercard.value?.userCard?.psa = grade
+                    userMainViewModel.refreshUser()
+                    _state.update { it.copy(isLoading = false) }
+                }
+                .onFailure { error ->
+                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
+                }
         }
     }
 
