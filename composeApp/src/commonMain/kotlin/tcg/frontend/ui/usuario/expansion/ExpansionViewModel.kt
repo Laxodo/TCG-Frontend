@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
+import tcg.frontend.aplicacion.generation.listExpansionGeneration.ListExpansionGenerationCommand
+import tcg.frontend.aplicacion.generation.listExpansionGeneration.ListExpansionGenerationUseCase
 import tcg.frontend.dominio.Expansion
 
 data class ExpansionState(
@@ -16,7 +17,7 @@ data class ExpansionState(
 )
 
 class ExpansionViewModel(
-    private val listExpansionUseCase: ListExpansionUseCase
+    private val listExpansionGenerationUseCase: ListExpansionGenerationUseCase
 ): ViewModel() {
     private val _items = MutableStateFlow<MutableList<Expansion>>(mutableListOf())
     val items: StateFlow<List<Expansion>> = _items.asStateFlow()
@@ -46,7 +47,11 @@ class ExpansionViewModel(
         val id = generationId ?: return
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
-            listExpansionUseCase(id).onSuccess { expansions ->
+            listExpansionGenerationUseCase(
+                ListExpansionGenerationCommand(
+                    idGeneration = id
+                )
+            ).onSuccess { expansions ->
                     _state.update { it.copy(isLoading = false) }
                     _items.value.clear()
                     _items.value.addAll(expansions)

@@ -2,20 +2,19 @@ package tcg.frontend.infraestructura.repository
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import tcg.frontend.aplicacion.generation.listExpansionGeneration.ListExpansionGenerationCommand
 import tcg.frontend.dominio.Expansion
 import tcg.frontend.dominio.IExpansionRepository
 import tcg.frontend.infraestructura.entities.expansion.CreateExpansionRequest
-import tcg.frontend.infraestructura.entities.expansion.GetExpansionResponse
 import tcg.frontend.infraestructura.entities.expansion.GetExpansionsResponse
 
 class ExpansionRepository(private val url: String, private val _client: HttpClient): IExpansionRepository {
-    override suspend fun getExpansionByGeneration(generationId: Int): Result<List<Expansion>> {
+    override suspend fun getExpansionByGeneration(generationId: ListExpansionGenerationCommand): Result<List<Expansion>> {
         return runCatching {
             val response = _client.get("$url/generation/$generationId/expansions")
 

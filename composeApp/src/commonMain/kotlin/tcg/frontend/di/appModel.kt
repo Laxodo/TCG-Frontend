@@ -9,7 +9,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import tcg.frontend.aplicacion.UserSessionManager
 import tcg.frontend.aplicacion.expansion.crear.CreateExpansionUseCase
-import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
+import tcg.frontend.aplicacion.generation.listExpansionGeneration.ListExpansionGenerationUseCase
 import tcg.frontend.aplicacion.generation.crear.CreateGenerationUseCase
 import tcg.frontend.aplicacion.generation.listar.ListGenerationUseCase
 import tcg.frontend.aplicacion.usuarios.delete.DeleteUserUseCase
@@ -75,7 +75,7 @@ val appModel = module{
     factory { RegisterUserCase(get()) }
     factory { ListUsersUseCase(get()) }
     factory { DeleteUserUseCase(get()) }
-    factory { ListExpansionUseCase(get()) }
+    factory { ListExpansionGenerationUseCase(get()) }
     factory { CreateExpansionUseCase(get()) }
     factory { CreateGenerationUseCase(get()) }
     factory { ListGenerationUseCase(get()) }

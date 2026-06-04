@@ -3,12 +3,12 @@ package tcg.frontend.ui.administracion.expansion
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tcg.frontend.aplicacion.expansion.crear.CreateExpansionUseCase
-import tcg.frontend.aplicacion.expansion.listar.ListExpansionUseCase
+import tcg.frontend.aplicacion.generation.listExpansionGeneration.ListExpansionGenerationCommand
+import tcg.frontend.aplicacion.generation.listExpansionGeneration.ListExpansionGenerationUseCase
 import tcg.frontend.dominio.Expansion
 import tcg.frontend.infraestructura.entities.expansion.CreateExpansionRequest
 
@@ -18,7 +18,7 @@ data class ExpansionState(
 )
 
 class ExpansionViewModel (
-    private val listExpansionUseCase: ListExpansionUseCase,
+    private val listExpansionGenerationUseCase: ListExpansionGenerationUseCase,
     private val createExpansionUseCase: CreateExpansionUseCase
 ): ViewModel() {
     private val _items = MutableStateFlow<List<Expansion>>(emptyList())
@@ -45,8 +45,11 @@ class ExpansionViewModel (
         val generationId = _generationId.value ?: return
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
-
-            listExpansionUseCase(generationId).onSuccess { expansions ->
+            listExpansionGenerationUseCase(
+                ListExpansionGenerationCommand(
+                    idGeneration = generationId
+                )
+            ).onSuccess { expansions ->
                 _items.value = expansions
                 _state.update { it.copy(isLoading = false) }
             }.onFailure { error ->
