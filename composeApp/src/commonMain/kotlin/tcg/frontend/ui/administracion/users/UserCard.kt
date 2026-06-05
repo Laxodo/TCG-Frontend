@@ -14,8 +14,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,7 +43,9 @@ fun UserCard(
     item: User,
     onView: (User) -> Unit,
     onEdit: (User) -> Unit,
-    onDelete: (item: User) -> Unit
+    onInventory: (User) -> Unit,
+    onDelete: (item: User) -> Unit,
+    onTransiction: (User) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -103,6 +107,14 @@ fun UserCard(
 
                 OutlinedIconButton(onClick = { onEdit(item) }) {
                     Icon(Icons.Default.Edit, contentDescription = "Editar")
+                }
+
+                OutlinedIconButton(onClick = { onInventory(item) }) {
+                    Icon(Icons.Default.Inventory2, contentDescription = "Ver inventario")
+                }
+
+                OutlinedIconButton(onClick = { onTransiction(item) }) {
+                    Icon(Icons.Default.ContentPaste, contentDescription = "Ver logs")
                 }
 
                 OutlinedIconButton(

@@ -298,7 +298,7 @@ fun UserMain(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = user?.money?.toString() + " €",
+                            text = if (user != null) "${user!!.money}€" else "0€",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(16.dp)
                         )

@@ -8,6 +8,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.request
 import io.ktor.http.ContentType
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
@@ -17,11 +18,15 @@ import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionCom
 import tcg.frontend.aplicacion.usercard.listCollection.UserCardCollectionDTO
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardCommand
 import tcg.frontend.aplicacion.users.getuser.GetUserCommand
+import tcg.frontend.aplicacion.users.logs.ListLogHistoryCommand
 import tcg.frontend.aplicacion.users.update.UpdateUserCommand
 import tcg.frontend.dominio.Card
 import tcg.frontend.dominio.IUserRepository
+import tcg.frontend.dominio.LogHistory
+import tcg.frontend.dominio.LogHistoryPagination
 import tcg.frontend.dominio.User
 import tcg.frontend.dominio.UserCard
+import tcg.frontend.infraestructura.entities.user.GetLogHistoryUserResponse
 import tcg.frontend.infraestructura.entities.user.GetUserByIdResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCardListResponse
 import tcg.frontend.infraestructura.entities.user.GetUserCardResponse
@@ -31,6 +36,7 @@ import tcg.frontend.infraestructura.entities.user.GetUserListResponse
 import tcg.frontend.infraestructura.entities.user.GetUserResponse
 import tcg.frontend.infraestructura.entities.user.LoginResponse
 import tcg.frontend.infraestructura.entities.user.UpdateUserRequest
+import tcg.frontend.infraestructura.entities.user.toDomain
 import kotlin.runCatching
 
 class UserRepository(private val url: String, private val _client: HttpClient) : IUserRepository {
@@ -179,8 +185,6 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
                         "?expansion=${listUserCardCollectionCommand.idExpansion}"
             )
 
-            val responseString = request.body<String>()
-            println("JSON REAL RECIBIDO: $responseString")
             val item = request.body<GetUserCollectionListResponse>()
 
             if(request.status.value !in 200..<300)
@@ -197,4 +201,43 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
             }
         }
     }
+
+    override suspend fun getLogHistoryUser(listLogHistoryCommand: ListLogHistoryCommand): Result<LogHistoryPagination> {
+        return runCatching {
+            val request = _client.get("$url/users/${listLogHistoryCommand.id}/logs")
+
+            val item = request.body<GetLogHistoryUserResponse>()
+
+            val responseString = request.body<String>()
+            println("JSON REAL RECIBIDO: $responseString")
+
+            LogHistoryPagination(
+                items = item.items.map { it.toDomain() },
+                total = item.total,
+                page = item.page,
+                size = item.size,
+                pages = item.pages
+            )
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

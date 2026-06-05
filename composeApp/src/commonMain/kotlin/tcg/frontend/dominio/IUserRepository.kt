@@ -6,6 +6,7 @@ import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionCom
 import tcg.frontend.aplicacion.usercard.listCollection.UserCardCollectionDTO
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardCommand
 import tcg.frontend.aplicacion.users.getuser.GetUserCommand
+import tcg.frontend.aplicacion.users.logs.ListLogHistoryCommand
 import tcg.frontend.aplicacion.users.update.UpdateUserCommand
 import tcg.frontend.infraestructura.entities.user.LoginResponse
 
@@ -17,4 +18,5 @@ interface IUserRepository {
     suspend fun updateUser(updateUserCommand: UpdateUserCommand): Result<Boolean>
     suspend fun getUserCards(listUserCardCommand: ListUserCardCommand): Result<Map<Card, List<UserCard>>>
     suspend fun getUserCollection(listUserCardCollectionCommand: ListUserCardCollectionCommand): Result<List<UserCardCollectionDTO>>
+    suspend fun getLogHistoryUser(listLogHistoryCommand: ListLogHistoryCommand): Result<LogHistoryPagination>
 }

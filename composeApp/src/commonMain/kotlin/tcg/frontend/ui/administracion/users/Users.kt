@@ -41,7 +41,9 @@ fun Users(
     userViewModel: UserViewModel,
     onSelectItem: (User?) -> Unit,
     onViewItem: (User) -> Unit,
-    onDeleteItem: (User) -> Unit
+    onInventory: (User) -> Unit,
+    onDeleteItem: (User) -> Unit,
+    onTransactions: (User) -> Unit
 ){
     val items by userViewModel.items.collectAsState()
     var searchText by remember { mutableStateOf("")}
@@ -121,7 +123,13 @@ fun Users(
                                     onSelectItem(it)
                                 },
                                 {
+                                    onInventory(it)
+                                },
+                                {
                                     onDeleteItem(it)
+                                },
+                                {
+                                    onTransactions(it)
                                 }
                             )
 

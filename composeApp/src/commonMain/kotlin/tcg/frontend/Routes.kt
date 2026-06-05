@@ -5,6 +5,8 @@ object Routes {
     const val ACCESS = "access"
     const val USERS = "users"
     const val USER = "user"
+    const val LOGS = "logs"
+    const val LOG = "log"
     const val EXPANSIONS = "expansions"
     const val USERCARDS = "usercards"
     const val USERCARD = "usercard"

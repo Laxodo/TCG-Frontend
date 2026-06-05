@@ -7,6 +7,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import tcg.frontend.aplicacion.UserManager
 import tcg.frontend.aplicacion.UserSessionManager
 import tcg.frontend.aplicacion.expansion.list.ListExpansionUseCase
 import tcg.frontend.aplicacion.expansion.listcards.ListCardsExpansionUseCase
@@ -24,6 +25,7 @@ import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUse
 import tcg.frontend.aplicacion.usercard.listar.ListUserCardUseCase
 import tcg.frontend.aplicacion.users.getuser.GetUserUseCase
 import tcg.frontend.aplicacion.users.listar.ListUsersUseCase
+import tcg.frontend.aplicacion.users.logs.ListLogHistoryUseCase
 import tcg.frontend.aplicacion.users.update.UpdateUserUseCase
 import tcg.frontend.dominio.IExpansionRepository
 import tcg.frontend.dominio.IMarketRepository
@@ -38,6 +40,8 @@ import tcg.frontend.ui.MainViewModel
 import tcg.frontend.ui.administracion.AdminMainViewModel
 import tcg.frontend.ui.administracion.users.UserViewModel
 import tcg.frontend.ui.administracion.users.form.UserFormViewModel
+import tcg.frontend.ui.administracion.users.inventory.gallery.detail.UserCardGalleryDetailAdminViewModel
+import tcg.frontend.ui.administracion.users.logs.LogsViewModel
 import tcg.frontend.ui.login.LoginViewModel
 import tcg.frontend.ui.usuario.UserMainViewModel
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
@@ -69,8 +73,8 @@ val appModel = module {
     single<IUserRepository> { UserRepository("http://192.168.0.113:8000", get()) }
     single<IExpansionRepository> { ExpansionRepository("http://192.168.0.113:8000", get()) }
     single<IMarketRepository> { MarketRepository("http://192.168.0.113:8000", get()) }
-    single { UserMainViewModel(get(), get()) }
     single { createHttpClient(get()) }
+    single { UserManager() }
 
     factory { LoginUseCase(get(), get()) }
     factory { ListUsersUseCase(get()) }
@@ -89,8 +93,10 @@ val appModel = module {
     factory { ListCardsExpansionUseCase(get()) }
     factory { ExchangeCardUseCase(get()) }
     factory { GradeCardUseCase(get()) }
+    factory { ListLogHistoryUseCase(get()) }
 
     viewModel { AdminMainViewModel() }
+    viewModel { UserMainViewModel(get(), get(), get()) }
     viewModel { (item: User?) -> UserFormViewModel(item = item) }
     viewModel { UserViewModel(get(), get(), get()) }
     viewModel { LoginViewModel(get()) }
@@ -117,4 +123,6 @@ val appModel = module {
     viewModel { MarketViewModel() }
     viewModel { CancelOffersViewModel(get(), get(), get()) }
     viewModel { ExchangeOffersViewModel(get(), get(), get()) }
+    viewModel { UserCardGalleryDetailAdminViewModel(null) }
+    viewModel { LogsViewModel(get()) }
 }
