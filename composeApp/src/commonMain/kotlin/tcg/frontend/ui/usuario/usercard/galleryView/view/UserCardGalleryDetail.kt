@@ -102,7 +102,7 @@ fun Card(
     onExchange: () -> Unit,
     onClose: () -> Unit
 ){
-    val selectedCard = userCardGalleryViewViewModel.userCard.value
+    val selectedCard by userCardGalleryViewViewModel.userCard.collectAsState()
     val state by userCardGalleryViewViewModel.uiState.collectAsState()
     val cards by expansionViewModel.cards.collectAsState()
     val exchangeCard by userCardGalleryViewViewModel.exchangeCard.collectAsState()

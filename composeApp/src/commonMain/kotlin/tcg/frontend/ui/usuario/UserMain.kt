@@ -70,6 +70,7 @@ fun UserMain(
     val user by userMainViewModel.user.collectAsState()
     val window = currentWindowAdaptiveInfo()
     var screenState by remember { mutableStateOf(true) }
+    var refresh = false // Sorry for this
 
     userMainViewModel.setOptions(
         listOf(
@@ -161,13 +162,18 @@ fun UserMain(
                     })
             }
 
-            // TODO: The gallery doesn't refresh when returning from the single card detail view.
             composable(Routes.USERCARDS) {
                 val userCardGalleryViewModel: UserCardGalleryViewModel = koinViewModel<UserCardGalleryViewModel>{
                     parametersOf(mainViewModel.currentUserState.value?.id, expansionViewModel.selected.value?.id)
                 }
                 val userCardCollectionViewModel: UserCardCollectionViewModel = koinViewModel<UserCardCollectionViewModel> {
                     parametersOf(mainViewModel.currentUserState.value?.id, expansionViewModel.selected.value?.id)
+                }
+
+                if (refresh){ // Sorry for this
+                    userCardGalleryViewModel.refresh()
+                    userCardCollectionViewModel.refresh()
+                    refresh = false
                 }
 
                 if (screenState) {
@@ -178,6 +184,7 @@ fun UserMain(
                                 userCardGalleryViewModel.setSelectedUserCard(it)
                             }else{
                                 userCardGalleryDetailViewModel.setSelectedUserCard(it)
+                                expansionViewModel.getExpansionCards()
                                 navController.navigate(Routes.USERCARD) {
                                     launchSingleTop = true
                                 }
@@ -223,24 +230,28 @@ fun UserMain(
                 }
             }
 
+            // TODO: This prints multiples times, i dont know why.
             composable(Routes.USERCARD){
-                expansionViewModel.getExpansionCards()
                 UserCardGalleryDetail(
                     userCardGalleryDetailViewModel,
                     expansionViewModel,
                     {
                         userCardGalleryDetailViewModel.quickSell()
+                        refresh = true
                         navController.popBackStack()
                     },
                     {
                         userCardGalleryDetailViewModel.sellCard()
+                        refresh = true
                         navController.popBackStack()
                     },
                     {
                         userCardGalleryDetailViewModel.gradeCard()
+                        refresh = true
                     },
                     {
                         userCardGalleryDetailViewModel.exchangeCard()
+                        refresh = true
                         navController.popBackStack()
                     },
                     {

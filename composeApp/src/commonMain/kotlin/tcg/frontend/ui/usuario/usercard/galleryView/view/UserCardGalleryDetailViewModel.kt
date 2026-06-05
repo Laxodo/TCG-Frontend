@@ -116,7 +116,8 @@ class UserCardGalleryDetailViewModel(
             _state.update { it.copy(isLoading = true, errorMessage = null) }
             gradeCardUseCase.invoke(GradeCardCommand(_usercard.value?.userCard?.id ?: -999))
                 .onSuccess { grade ->
-                    _usercard.value?.userCard?.psa = grade
+                    //_usercard.value?.userCard?.psa = grade
+                    _usercard.value?.userCard?.copy(psa = grade)?.let { _usercard.value = _usercard.value?.copy(userCard = it) }
                     userMainViewModel.refreshUser()
                     _state.update { it.copy(isLoading = false) }
                 }
