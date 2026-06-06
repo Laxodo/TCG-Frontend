@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tcg.frontend.aplicacion.expansion.list.ListExpansionUseCase
-import tcg.frontend.aplicacion.expansion.listcards.ListCardsExpansionCommands
-import tcg.frontend.aplicacion.expansion.listcards.ListCardsExpansionUseCase
-import tcg.frontend.dominio.Card
+import tcg.frontend.aplicacion.generation.listexpansions.ListGenerationExpansionCommand
+import tcg.frontend.aplicacion.generation.listexpansions.ListGenerationExpansionUseCase
 import tcg.frontend.dominio.Expansion
+import tcg.frontend.dominio.Generation
 
 data class ExpansionState(
     val isLoading: Boolean = false,
@@ -19,17 +19,14 @@ data class ExpansionState(
 )
 
 class ExpansionViewModel(
-    private val listExpansionUseCase: ListExpansionUseCase,
-    private val listCardsExpansionUseCase: ListCardsExpansionUseCase
+    private val listGenerationExpansionUseCase: ListGenerationExpansionUseCase,
+    private val listExpansionUseCase: ListExpansionUseCase
 ): ViewModel() {
     private val _items = MutableStateFlow<MutableList<Expansion>>(mutableListOf())
     val items: StateFlow<List<Expansion>> = _items.asStateFlow()
 
     private val _selected = MutableStateFlow<Expansion?>(null)
     val selected = _selected.asStateFlow()
-
-    private val _cards = MutableStateFlow<MutableList<Card>>(mutableListOf())
-    val cards = _cards.asStateFlow()
 
     private val _state = MutableStateFlow(ExpansionState())
     val state = _state.asStateFlow()
@@ -42,14 +39,13 @@ class ExpansionViewModel(
         _selected.value = item
     }
 
-    fun getExpansionCards() {
+    fun getGenerationExpansions(id: Int){
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
-            listCardsExpansionUseCase.invoke(ListCardsExpansionCommands(_selected.value?.id!!))
-                .onSuccess { cards ->
+            listGenerationExpansionUseCase.invoke(ListGenerationExpansionCommand(id))
+                .onSuccess { expansions ->
+                    _items.value = expansions as MutableList
                     _state.update { it.copy(isLoading = false) }
-                    _cards.value.clear()
-                    _cards.value = cards as MutableList
                 }
                 .onFailure { error ->
                     _state.update { it.copy(errorMessage = error.message, isLoading = false) }

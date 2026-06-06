@@ -55,14 +55,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
-import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryCard
+import tcg.frontend.ui.usuario.wiki.card.CardViewModel
 
 @Preview
 @Composable
 fun UserCardGalleryDetail(
     userCardGalleryViewViewModel: UserCardGalleryDetailViewModel,
-    expansionViewModel: ExpansionViewModel,
+    cardViewModel: CardViewModel,
     onQuickSell: () -> Unit,
     onSell: () -> Unit,
     onGrade: () -> Unit,
@@ -86,7 +85,7 @@ fun UserCardGalleryDetail(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Card(userCardGalleryViewViewModel, expansionViewModel, onQuickSell, onSell, onGrade, onExchange, onClose)
+            Card(userCardGalleryViewViewModel, cardViewModel, onQuickSell, onSell, onGrade, onExchange, onClose)
         }
     }
 }
@@ -95,7 +94,7 @@ fun UserCardGalleryDetail(
 @Composable
 fun Card(
     userCardGalleryViewViewModel: UserCardGalleryDetailViewModel,
-    expansionViewModel: ExpansionViewModel,
+    cardViewModel: CardViewModel,
     onQuickSell: () -> Unit,
     onSell: () -> Unit,
     onGrade: () -> Unit,
@@ -104,7 +103,7 @@ fun Card(
 ){
     val selectedCard by userCardGalleryViewViewModel.userCard.collectAsState()
     val state by userCardGalleryViewViewModel.uiState.collectAsState()
-    val cards by expansionViewModel.cards.collectAsState()
+    val cards by cardViewModel.items.collectAsState()
     val exchangeCard by userCardGalleryViewViewModel.exchangeCard.collectAsState()
     var cardImageState by remember { mutableStateOf(true) }
     var showSellDialog by remember { mutableStateOf(false) }

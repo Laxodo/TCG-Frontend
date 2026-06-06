@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Euro
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material3.Icon
@@ -54,6 +55,11 @@ import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGallery
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetail
 import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
+import tcg.frontend.ui.usuario.wiki.card.Card
+import tcg.frontend.ui.usuario.wiki.card.CardViewModel
+import tcg.frontend.ui.usuario.wiki.card.detail.CardDetail
+import tcg.frontend.ui.usuario.wiki.generation.Generation
+import tcg.frontend.ui.usuario.wiki.generation.GenerationViewModel
 
 @Composable
 fun UserMain(
@@ -64,6 +70,7 @@ fun UserMain(
     val expansionViewModel: ExpansionViewModel = koinViewModel()
     val userCardGalleryDetailViewModel: UserCardGalleryDetailViewModel = koinViewModel()
     val openBoosterViewModel: OpenBoosterViewModel = koinViewModel()
+    val cardViewModel: CardViewModel = koinViewModel()
     val navController = rememberNavController()
 
     val options by userMainViewModel.options.collectAsState()
@@ -74,6 +81,14 @@ fun UserMain(
 
     userMainViewModel.setOptions(
         listOf(
+            ItemOption(
+                Icons.Default.Euro, {
+                    navController.navigate(Routes.GENERATION){
+                        launchSingleTop = true
+                    }
+                },
+                "Mercado"
+            ),
             ItemOption(
                 Icons.Default.Shop, {
                     navController.navigate(Routes.MARKET){
@@ -150,6 +165,34 @@ fun UserMain(
                 )
             }
 
+            composable(Routes.GENERATION){
+                val generationViewModel: GenerationViewModel = koinViewModel()
+                Generation(
+                    generationViewModel,
+                    {
+                        generationViewModel.setSelectedGeneration(it)
+                        expansionViewModel.getGenerationExpansions(it.id)
+                        navController.navigate(Routes.EXPANSIONSWIKI)
+                    },
+                    {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Routes.EXPANSIONSWIKI){
+                Expansion(expansionViewModel,{
+                    expansionViewModel.setSelectedExpansion(it)
+                    cardViewModel.getExpansionCards(it.id)
+                    navController.navigate(Routes.CARDS){
+                        launchSingleTop = true
+                    }
+                },
+                    {
+                        navController.popBackStack()
+                    })
+            }
+
             composable(Routes.EXPANSIONS){
                 Expansion(expansionViewModel,{
                     expansionViewModel.setSelectedExpansion(it)
@@ -160,6 +203,30 @@ fun UserMain(
                     {
                         navController.popBackStack()
                     })
+            }
+
+            composable(Routes.CARDS){
+                Card(
+                    cardViewModel,
+                    {
+                        cardViewModel.setSelectedCard(it)
+                        navController.navigate(Routes.CARD){
+                            launchSingleTop = true
+                        }
+                    },
+                    {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Routes.CARD){
+                CardDetail(
+                    cardViewModel,
+                    {
+                        navController.popBackStack()
+                    }
+                )
             }
 
             composable(Routes.USERCARDS) {
@@ -184,7 +251,7 @@ fun UserMain(
                                 userCardGalleryViewModel.setSelectedUserCard(it)
                             }else{
                                 userCardGalleryDetailViewModel.setSelectedUserCard(it)
-                                expansionViewModel.getExpansionCards()
+                                cardViewModel.getExpansionCards(it.card.idExpansion)
                                 navController.navigate(Routes.USERCARD) {
                                     launchSingleTop = true
                                 }
@@ -234,7 +301,7 @@ fun UserMain(
             composable(Routes.USERCARD){
                 UserCardGalleryDetail(
                     userCardGalleryDetailViewModel,
-                    expansionViewModel,
+                    cardViewModel,
                     {
                         userCardGalleryDetailViewModel.quickSell()
                         refresh = true

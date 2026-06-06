@@ -11,6 +11,8 @@ import tcg.frontend.aplicacion.UserManager
 import tcg.frontend.aplicacion.UserSessionManager
 import tcg.frontend.aplicacion.expansion.list.ListExpansionUseCase
 import tcg.frontend.aplicacion.expansion.listcards.ListCardsExpansionUseCase
+import tcg.frontend.aplicacion.generation.list.ListGenerationUseCase
+import tcg.frontend.aplicacion.generation.listexpansions.ListGenerationExpansionUseCase
 import tcg.frontend.aplicacion.users.delete.DeleteUserUseCase
 import tcg.frontend.aplicacion.login.LoginUseCase
 import tcg.frontend.aplicacion.market.grade.GradeCardUseCase
@@ -28,12 +30,14 @@ import tcg.frontend.aplicacion.users.listar.ListUsersUseCase
 import tcg.frontend.aplicacion.users.logs.ListLogHistoryUseCase
 import tcg.frontend.aplicacion.users.update.UpdateUserUseCase
 import tcg.frontend.dominio.IExpansionRepository
+import tcg.frontend.dominio.IGenerationRepository
 import tcg.frontend.dominio.IMarketRepository
 import tcg.frontend.dominio.IUserRepository
 import tcg.frontend.dominio.User
 import tcg.frontend.infraestructura.TokenStorage
 import tcg.frontend.infraestructura.ktor.createHttpClient
 import tcg.frontend.infraestructura.repository.ExpansionRepository
+import tcg.frontend.infraestructura.repository.GenerationRepository
 import tcg.frontend.infraestructura.repository.MarketRepository
 import tcg.frontend.infraestructura.repository.UserRepository
 import tcg.frontend.ui.MainViewModel
@@ -53,6 +57,8 @@ import tcg.frontend.ui.usuario.openbooster.OpenBoosterViewModel
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
+import tcg.frontend.ui.usuario.wiki.card.CardViewModel
+import tcg.frontend.ui.usuario.wiki.generation.GenerationViewModel
 
 val appModel = module {
 
@@ -73,6 +79,7 @@ val appModel = module {
     single<IUserRepository> { UserRepository("http://192.168.0.113:8000", get()) }
     single<IExpansionRepository> { ExpansionRepository("http://192.168.0.113:8000", get()) }
     single<IMarketRepository> { MarketRepository("http://192.168.0.113:8000", get()) }
+    single<IGenerationRepository> { GenerationRepository("http://192.168.0.113:8000", get()) }
     single { createHttpClient(get()) }
     single { UserManager() }
 
@@ -94,6 +101,8 @@ val appModel = module {
     factory { ExchangeCardUseCase(get()) }
     factory { GradeCardUseCase(get()) }
     factory { ListLogHistoryUseCase(get()) }
+    factory { ListGenerationUseCase(get()) }
+    factory { ListGenerationExpansionUseCase(get()) }
 
     viewModel { AdminMainViewModel() }
     viewModel { UserMainViewModel(get(), get(), get()) }
@@ -125,4 +134,6 @@ val appModel = module {
     viewModel { ExchangeOffersViewModel(get(), get(), get()) }
     viewModel { UserCardGalleryDetailAdminViewModel(null) }
     viewModel { LogsViewModel(get()) }
+    viewModel { CardViewModel(get()) }
+    viewModel { GenerationViewModel(get()) }
 }

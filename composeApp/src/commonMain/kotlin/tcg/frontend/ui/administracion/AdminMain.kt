@@ -57,6 +57,7 @@ import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollection
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
+import tcg.frontend.ui.usuario.wiki.card.CardViewModel
 
 @Composable
 fun AdminMain(
@@ -67,6 +68,7 @@ fun AdminMain(
     val userCardGalleryDetailViewModel: UserCardGalleryDetailViewModel = koinViewModel()
     val logsViewModel: LogsViewModel = koinViewModel()
     val userViewModel: UserViewModel = koinViewModel()
+    val cardViewModel: CardViewModel = koinViewModel()
     val navController = rememberNavController()
 
     val options by adminMainViewModel.options.collectAsState()
@@ -175,7 +177,7 @@ fun AdminMain(
                         userCardGalleryViewModel,
                         {
                             userCardGalleryDetailViewModel.setSelectedUserCard(it)
-                            expansionViewModel.getExpansionCards()
+                            cardViewModel.getExpansionCards(it.card.idExpansion)
                             navController.navigate(Routes.USERCARD){
                                 launchSingleTop = true
                             }
