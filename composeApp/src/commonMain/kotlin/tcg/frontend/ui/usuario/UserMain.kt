@@ -16,7 +16,9 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Euro
 import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Shop
+import androidx.compose.material.icons.filled.West
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -43,12 +45,15 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import tcg.frontend.Routes
 import tcg.frontend.ui.MainViewModel
+import tcg.frontend.ui.administracion.users.form.UserFormViewModel
 import tcg.frontend.ui.usuario.expansion.Expansion
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
 import tcg.frontend.ui.usuario.market.Market
 import tcg.frontend.ui.usuario.openbooster.OpenBooster
 import tcg.frontend.ui.usuario.openbooster.OpenBoosterViewModel
 import tcg.frontend.ui.usuario.openbooster.view.OpenBoosterView
+import tcg.frontend.ui.usuario.profile.Profile
+import tcg.frontend.ui.usuario.profile.ProfileViewModel
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollection
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGallery
@@ -71,6 +76,7 @@ fun UserMain(
     val userCardGalleryDetailViewModel: UserCardGalleryDetailViewModel = koinViewModel()
     val openBoosterViewModel: OpenBoosterViewModel = koinViewModel()
     val cardViewModel: CardViewModel = koinViewModel()
+    val profileViewModel: ProfileViewModel = koinViewModel()
     val navController = rememberNavController()
 
     val options by userMainViewModel.options.collectAsState()
@@ -327,11 +333,57 @@ fun UserMain(
                 )
             }
 
+            composable(Routes.PROFILE){
+                val userFormViewModel: UserFormViewModel = koinViewModel<UserFormViewModel> {
+                    parametersOf(userMainViewModel.user.value)
+                }
+                Profile(
+                    userFormViewModel,
+                    {
+                        profileViewModel.updateUser(it)
+                    },
+                    {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
         }
     }
 
     if (window.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
         Scaffold(
+            topBar = {
+                NavigationBar {
+                    NavigationBarItem(
+                        selected = true,
+                        onClick = {
+                            navController.popBackStack()
+                        },
+                        icon = { Icon(Icons.Default.West, contentDescription = "Back") },
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Text(
+                        text = if (user != null) "${user!!.money}€" else "0€",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(16.dp)
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    NavigationBarItem(
+                        selected = true,
+                        onClick = {
+                            navController.navigate(Routes.PROFILE){
+                                launchSingleTop = true
+                            }
+                        },
+                        icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+                    )
+                }
+            },
             bottomBar = {
                 NavigationBar {
                     userMainViewModel.options.collectAsState().value.forEach { item ->
@@ -364,6 +416,31 @@ fun UserMain(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        NavigationDrawerItem(
+                            icon = {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center,
+
+                                    ) {
+                                    Icon(
+                                        Icons.Default.Person,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        contentDescription = "Profile"
+                                    )
+                                }
+                            },
+                            label = { window.windowSizeClass.toString() },
+                            selected = false,
+                            onClick = {
+                                navController.navigate(Routes.PROFILE){
+                                    launchSingleTop = true
+                                }
+                            },
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+
+                        )
                         Text(
                             text = if (user != null) "${user!!.money}€" else "0€",
                             style = MaterialTheme.typography.bodyMedium,
@@ -394,6 +471,29 @@ fun UserMain(
                             )
                         }
                         Spacer(modifier = Modifier.weight(1f))
+                        NavigationDrawerItem(
+                            icon = {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center,
+
+                                    ) {
+                                    Icon(
+                                        Icons.Default.West,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        contentDescription = "Back"
+                                    )
+                                }
+                            },
+                            label = { window.windowSizeClass.toString() },
+                            selected = false,
+                            onClick = {
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+
+                        )
                     }
                 }
             },

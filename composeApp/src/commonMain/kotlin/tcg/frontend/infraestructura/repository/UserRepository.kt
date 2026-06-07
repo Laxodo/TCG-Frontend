@@ -204,7 +204,7 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
 
     override suspend fun getLogHistoryUser(listLogHistoryCommand: ListLogHistoryCommand): Result<LogHistoryPagination> {
         return runCatching {
-            val request = _client.get("$url/users/${listLogHistoryCommand.id}/logs")
+            val request = _client.get("$url/users/${listLogHistoryCommand.id}/logs?page=${listLogHistoryCommand.page}&size=${listLogHistoryCommand.size}")
 
             val item = request.body<GetLogHistoryUserResponse>()
 

@@ -22,4 +22,5 @@ object Routes {
     const val VIEWSELFOFFERS = "viewselfoffers"
     const val OPENBOOSTER = "openbooster"
     const val OPENBOOSTERVIEW = "openboosterview"
+    const val PROFILE = "profile"
 }

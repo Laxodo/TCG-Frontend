@@ -54,6 +54,7 @@ import tcg.frontend.ui.usuario.market.canceloffer.CancelOffersViewModel
 import tcg.frontend.ui.usuario.market.exchangeoffers.ExchangeOffersViewModel
 import tcg.frontend.ui.usuario.market.selloffers.SellOffersViewModel
 import tcg.frontend.ui.usuario.openbooster.OpenBoosterViewModel
+import tcg.frontend.ui.usuario.profile.ProfileViewModel
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
@@ -136,4 +137,5 @@ val appModel = module {
     viewModel { LogsViewModel(get()) }
     viewModel { CardViewModel(get()) }
     viewModel { GenerationViewModel(get()) }
+    viewModel { ProfileViewModel(get(), get()) }
 }

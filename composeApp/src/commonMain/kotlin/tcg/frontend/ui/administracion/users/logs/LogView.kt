@@ -34,12 +34,13 @@ fun LogView(
     onBack: () -> Unit
 ) {
     val state by logsViewModel.state.collectAsState()
-    val lazyPagingItems = logsViewModel.paging.value.collectAsLazyPagingItems()
+    val lazyPagingItems by logsViewModel.paging.collectAsState()
+    val item = lazyPagingItems.collectAsLazyPagingItems()
     Box(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        if (lazyPagingItems.loadState.refresh is LoadState.Loading){
+        if (item.loadState.refresh is LoadState.Loading){
             CircularProgressIndicator()
         }else {
             Column(
@@ -71,8 +72,8 @@ fun LogView(
                         }
                     }
                     LazyColumn {
-                        items(lazyPagingItems.itemCount){ position ->
-                            val itemValue = lazyPagingItems[position]
+                        items(item.itemCount){ position ->
+                            val itemValue = item[position]
                             if (itemValue != null){
                                 LogViewCard(
                                     itemValue,
@@ -82,7 +83,7 @@ fun LogView(
                                 )
                             }
                         }
-                        if (lazyPagingItems.loadState.append is LoadState.Loading) {
+                        if (item.loadState.append is LoadState.Loading) {
                             item {
                                 Box(modifier = Modifier.fillMaxWidth()) {
                                     CircularProgressIndicator(
