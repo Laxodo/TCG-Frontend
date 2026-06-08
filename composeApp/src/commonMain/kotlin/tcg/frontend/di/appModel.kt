@@ -1,0 +1,141 @@
+package tcg.frontend.di
+
+import com.russhwolf.settings.Settings
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
+import tcg.frontend.aplicacion.UserManager
+import tcg.frontend.aplicacion.UserSessionManager
+import tcg.frontend.aplicacion.expansion.list.ListExpansionUseCase
+import tcg.frontend.aplicacion.expansion.listcards.ListCardsExpansionUseCase
+import tcg.frontend.aplicacion.generation.list.ListGenerationUseCase
+import tcg.frontend.aplicacion.generation.listexpansions.ListGenerationExpansionUseCase
+import tcg.frontend.aplicacion.users.delete.DeleteUserUseCase
+import tcg.frontend.aplicacion.login.LoginUseCase
+import tcg.frontend.aplicacion.market.grade.GradeCardUseCase
+import tcg.frontend.aplicacion.market.offers.buy.BuyOfferUseCase
+import tcg.frontend.aplicacion.market.offers.cancel.CancelOfferUseCase
+import tcg.frontend.aplicacion.market.offers.exchange.ExchangeCardUseCase
+import tcg.frontend.aplicacion.market.offers.list.ListOffersUseCase
+import tcg.frontend.aplicacion.market.sell.SellOfferUseCase
+import tcg.frontend.aplicacion.market.openboosted.OpenBoosterUseCase
+import tcg.frontend.aplicacion.market.quicksell.QuickSellUseCase
+import tcg.frontend.aplicacion.usercard.listCollection.ListUserCardCollectionUseCase
+import tcg.frontend.aplicacion.usercard.listar.ListUserCardUseCase
+import tcg.frontend.aplicacion.users.getuser.GetUserUseCase
+import tcg.frontend.aplicacion.users.listar.ListUsersUseCase
+import tcg.frontend.aplicacion.users.logs.ListLogHistoryUseCase
+import tcg.frontend.aplicacion.users.update.UpdateUserUseCase
+import tcg.frontend.dominio.IExpansionRepository
+import tcg.frontend.dominio.IGenerationRepository
+import tcg.frontend.dominio.IMarketRepository
+import tcg.frontend.dominio.IUserRepository
+import tcg.frontend.dominio.User
+import tcg.frontend.infraestructura.TokenStorage
+import tcg.frontend.infraestructura.ktor.createHttpClient
+import tcg.frontend.infraestructura.repository.ExpansionRepository
+import tcg.frontend.infraestructura.repository.GenerationRepository
+import tcg.frontend.infraestructura.repository.MarketRepository
+import tcg.frontend.infraestructura.repository.UserRepository
+import tcg.frontend.ui.MainViewModel
+import tcg.frontend.ui.administracion.AdminMainViewModel
+import tcg.frontend.ui.administracion.users.UserViewModel
+import tcg.frontend.ui.administracion.users.form.UserFormViewModel
+import tcg.frontend.ui.administracion.users.inventory.gallery.detail.UserCardGalleryDetailAdminViewModel
+import tcg.frontend.ui.administracion.users.logs.LogsViewModel
+import tcg.frontend.ui.login.LoginViewModel
+import tcg.frontend.ui.usuario.UserMainViewModel
+import tcg.frontend.ui.usuario.expansion.ExpansionViewModel
+import tcg.frontend.ui.usuario.market.MarketViewModel
+import tcg.frontend.ui.usuario.market.canceloffer.CancelOffersViewModel
+import tcg.frontend.ui.usuario.market.exchangeoffers.ExchangeOffersViewModel
+import tcg.frontend.ui.usuario.market.selloffers.SellOffersViewModel
+import tcg.frontend.ui.usuario.openbooster.OpenBoosterViewModel
+import tcg.frontend.ui.usuario.profile.ProfileViewModel
+import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
+import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
+import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
+import tcg.frontend.ui.usuario.wiki.card.CardViewModel
+import tcg.frontend.ui.usuario.wiki.generation.GenerationViewModel
+
+val appModel = module {
+
+    single {
+        HttpClient() {
+            install(ContentNegotiation) {
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                })
+            }
+        }
+    }
+
+    single { TokenStorage(Settings()) }
+    single { UserSessionManager(get()) }
+
+    single<IUserRepository> { UserRepository("http://192.168.0.113:8000", get()) }
+    single<IExpansionRepository> { ExpansionRepository("http://192.168.0.113:8000", get()) }
+    single<IMarketRepository> { MarketRepository("http://192.168.0.113:8000", get()) }
+    single<IGenerationRepository> { GenerationRepository("http://192.168.0.113:8000", get()) }
+    single { createHttpClient(get()) }
+    single { UserManager() }
+
+    factory { LoginUseCase(get(), get()) }
+    factory { ListUsersUseCase(get()) }
+    factory { DeleteUserUseCase(get()) }
+    factory { UpdateUserUseCase(get()) }
+    factory { ListExpansionUseCase(get()) }
+    factory { ListUserCardUseCase(get()) }
+    factory { ListUserCardCollectionUseCase(get()) }
+    factory { QuickSellUseCase(get()) }
+    factory { OpenBoosterUseCase(get()) }
+    factory { GetUserUseCase(get()) }
+    factory { ListOffersUseCase(get()) }
+    factory { BuyOfferUseCase(get()) }
+    factory { SellOfferUseCase(get()) }
+    factory { CancelOfferUseCase(get()) }
+    factory { ListCardsExpansionUseCase(get()) }
+    factory { ExchangeCardUseCase(get()) }
+    factory { GradeCardUseCase(get()) }
+    factory { ListLogHistoryUseCase(get()) }
+    factory { ListGenerationUseCase(get()) }
+    factory { ListGenerationExpansionUseCase(get()) }
+
+    viewModel { AdminMainViewModel() }
+    viewModel { UserMainViewModel(get(), get(), get()) }
+    viewModel { (item: User?) -> UserFormViewModel(item = item) }
+    viewModel { UserViewModel(get(), get(), get()) }
+    viewModel { LoginViewModel(get()) }
+    viewModel { MainViewModel(get()) }
+    viewModel { ExpansionViewModel(get(), get()) }
+    viewModel { OpenBoosterViewModel(get(), get()) }
+    viewModel { (id: Int, idExpansion: Int) ->
+        UserCardGalleryViewModel(
+            idUser = id,
+            idExpansion = idExpansion,
+            listUserCardUseCase = get(),
+            quickSellUseCase = get(),
+            userMainViewModel = get()
+        )
+    }
+    viewModel { (id: Int, idExpansion: Int) ->
+        UserCardCollectionViewModel(
+            idUser = id, idExpansion = idExpansion,
+            listUserCardCollectionUseCase = get()
+        )
+    }
+    viewModel { UserCardGalleryDetailViewModel(get(), get(), get(),get(), get(), null) }
+    viewModel { SellOffersViewModel(get(), get(), get()) }
+    viewModel { MarketViewModel() }
+    viewModel { CancelOffersViewModel(get(), get(), get()) }
+    viewModel { ExchangeOffersViewModel(get(), get(), get()) }
+    viewModel { UserCardGalleryDetailAdminViewModel(null) }
+    viewModel { LogsViewModel(get()) }
+    viewModel { CardViewModel(get()) }
+    viewModel { GenerationViewModel(get()) }
+    viewModel { ProfileViewModel(get(), get()) }
+}

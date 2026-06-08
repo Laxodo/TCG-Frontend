@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    kotlin("plugin.serialization") version "2.2.21"
 }
 
 kotlin {
@@ -18,7 +20,7 @@ kotlin {
     }
     
     jvm()
-    
+
     js {
         browser()
         binaries.executable()
@@ -34,6 +36,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            //ktor
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -44,6 +48,39 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            // Koin
+            implementation("io.insert-koin:koin-compose:4.1.1")
+            implementation("io.insert-koin:koin-compose-viewmodel:4.1.1")
+            implementation("io.insert-koin:koin-compose-viewmodel-navigation:4.1.1")
+
+            // Ktor
+            implementation(libs.ktor.client.core)
+            implementation("io.ktor:ktor-client-content-negotiation:3.5.0")
+            implementation("io.ktor:ktor-server-cors:3.5.0")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:3.5.0")
+            implementation("io.ktor:ktor-client-logging:3.5.0")
+            implementation("io.ktor:ktor-client-auth:3.5.0")
+
+            // Iconos
+            implementation(compose.material)
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
+
+            // Tamaño de pantalla
+            implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
+
+            // Administracion de token
+            implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
+
+            // coil
+            implementation("io.coil-kt.coil3:coil:3.4.0")
+            implementation("io.coil-kt.coil3:coil-compose:3.4.0")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.4.0")
+
+            // Paging
+            implementation("androidx.paging:paging-common:3.5.0")
+            implementation("androidx.paging:paging-compose:3.5.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -51,6 +88,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.ktor.client.okhttp)
         }
     }
 }
