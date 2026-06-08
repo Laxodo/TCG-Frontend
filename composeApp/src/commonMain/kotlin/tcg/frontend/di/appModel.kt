@@ -77,10 +77,10 @@ val appModel = module {
     single { TokenStorage(Settings()) }
     single { UserSessionManager(get()) }
 
-    single<IUserRepository> { UserRepository("http://192.168.0.113:8000", get()) }
-    single<IExpansionRepository> { ExpansionRepository("http://192.168.0.113:8000", get()) }
-    single<IMarketRepository> { MarketRepository("http://192.168.0.113:8000", get()) }
-    single<IGenerationRepository> { GenerationRepository("http://192.168.0.113:8000", get()) }
+    single<IUserRepository> { UserRepository("http://localhost:8000", get()) }
+    single<IExpansionRepository> { ExpansionRepository("http://localhost:8000", get()) }
+    single<IMarketRepository> { MarketRepository("http://localhost:8000", get()) }
+    single<IGenerationRepository> { GenerationRepository("http://localhost:8000", get()) }
     single { createHttpClient(get()) }
     single { UserManager() }
 
