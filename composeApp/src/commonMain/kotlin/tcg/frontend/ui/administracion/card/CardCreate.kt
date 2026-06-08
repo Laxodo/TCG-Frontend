@@ -18,17 +18,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 import tcg.frontend.infraestructura.entities.card.CreateCardRequest
+import tcg.frontend.ui.administracion.media.MediaViewModel
 
 @Composable
 fun CardCreate(
     cardViewModel: CardViewModel,
     expansionId: Int,
+    onPickImage: suspend () -> Pair<String, ByteArray>?,
     onBack: () -> Unit
 ) {
+    val mediaViewModel: MediaViewModel = koinViewModel()
+    val scope = rememberCoroutineScope()
+
     var name by remember { mutableStateOf("") }
     var rarity by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
@@ -72,19 +80,37 @@ fun CardCreate(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = frontcard,
-            onValueChange = { frontcard = it },
-            label = { Text("Imagen frontal") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        Button(
+            onClick = {
+                scope.launch {
+                    onPickImage()?.let { file ->
+                        val result = mediaViewModel.uploadImage(file.first, file.second)
+
+                        result.onSuccess { url ->
+                            frontcard = url
+                        }.onFailure {  }
+                    }
+                }
+            }
+        ) {
+            Text(if (frontcard.isBlank()) "Subir Frontcard" else "Imagen subida")
+        }
         Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = backcard,
-            onValueChange = { backcard = it },
-            label = { Text("Imagen trasera") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        Button(
+            onClick = {
+                scope.launch {
+                    onPickImage()?.let { file ->
+                        val result = mediaViewModel.uploadImage(file.first, file.second)
+
+                        result.onSuccess { url ->
+                            backcard = url
+                        }.onFailure {  }
+                    }
+                }
+            }
+        ) {
+            Text(if (backcard.isBlank()) "Subir Backcard" else "Imagen Subida")
+        }
         Spacer(Modifier.height(16.dp))
         Row {
             Button(

@@ -35,7 +35,6 @@ import tcg.frontend.infraestructura.repository.UserRepository
 import tcg.frontend.ui.MainViewModel
 import tcg.frontend.ui.register.RegisterViewModel
 import tcg.frontend.ui.administracion.AdminMainViewModel
-import tcg.frontend.ui.administracion.expansion.form.ExpansionFormViewModel
 import tcg.frontend.ui.administracion.users.UserViewModel
 import tcg.frontend.ui.usuario.expansion.ExpansionViewModel as UserExpansionViewModel
 import tcg.frontend.ui.administracion.expansion.ExpansionViewModel as AdminExpansionViewModel
@@ -47,6 +46,12 @@ import tcg.frontend.ui.usuario.market.openbooster.OpenBoosterViewModel
 import tcg.frontend.ui.usuario.usercard.collectionView.UserCardCollectionViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.UserCardGalleryViewModel
 import tcg.frontend.ui.usuario.usercard.galleryView.view.UserCardGalleryDetailViewModel
+import tcg.frontend.ui.administracion.card.CardViewModel
+import tcg.frontend.aplicacion.card.create.CreateCardUseCase
+import tcg.frontend.aplicacion.card.createBatch.CreateCardsBatchUseCase
+import tcg.frontend.aplicacion.expansion.listCardExpansion.ListCardExpansionUseCase
+import tcg.frontend.dominio.ICardRepository
+import tcg.frontend.infraestructura.repository.CardRepository
 
 val appModel = module{
 
@@ -68,6 +73,7 @@ val appModel = module{
     single<IExpansionRepository> { ExpansionRepository("http://127.0.0.1:8000", get()) }
     single<IGenerationRepository> { GenerationRepository("http://127.0.0.1:8000", get()) }
     single<IMarketRepository> { MarketRepository("http://127.0.0.1:8000", get()) }
+    single<ICardRepository> { CardRepository("http://127.0.0.1:800", get()) }
     single { UserMainViewModel(get(), get()) }
     single { createHttpClient(get()) }
 
@@ -84,6 +90,9 @@ val appModel = module{
     factory { QuickSellUseCase(get()) }
     factory { OpenBoosterUseCase(get()) }
     factory { GetUserUseCase(get()) }
+    factory { ListCardExpansionUseCase(get()) }
+    factory { CreateCardUseCase(get()) }
+    factory { CreateCardsBatchUseCase(get()) }
 
     viewModel { AdminMainViewModel() }
     viewModel { (item: User?) -> UserFormViewModel(item = item) }
@@ -91,7 +100,7 @@ val appModel = module{
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get()) }
     viewModel { MainViewModel(get()) }
-    viewModel { ExpansionFormViewModel() }
+    viewModel { CardViewModel(get(), get(), get()) }
     viewModel { UserExpansionViewModel(get()) }
     viewModel { AdminExpansionViewModel(get(), get()) }
     viewModel { GenerationViewModel(get(), get()) }

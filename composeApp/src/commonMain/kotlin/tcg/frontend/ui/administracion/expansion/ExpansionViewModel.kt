@@ -28,6 +28,7 @@ class ExpansionViewModel (
     val selected = _selected.asStateFlow()
 
     private val _generationId = MutableStateFlow<Int?>(null)
+    val generationId = _generationId.asStateFlow()
 
     private val _state = MutableStateFlow(ExpansionState())
     val state = _state.asStateFlow()

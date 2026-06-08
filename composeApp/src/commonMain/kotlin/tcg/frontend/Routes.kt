@@ -10,6 +10,8 @@ object Routes {
     const val EXPANSION_CREATE = "expansion_create"
     const val GENERATIONS = "generations"
     const val GENERATION_CREATE = "generation_create"
+    const val CARDS = "cards"
+    const val CARDS_CREATE = "cards_create"
     const val USERCARDS = "usercards"
     const val USERCARD = "usercard"
     const val OPENBOOSTER = "openbooster"

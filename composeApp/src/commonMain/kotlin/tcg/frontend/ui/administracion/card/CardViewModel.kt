@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tcg.frontend.aplicacion.card.create.CreateCardUseCase
+import tcg.frontend.aplicacion.card.createBatch.CreateCardsBatchUseCase
 import tcg.frontend.aplicacion.expansion.listCardExpansion.ListCardExpansionCommand
 import tcg.frontend.aplicacion.expansion.listCardExpansion.ListCardExpansionUseCase
 import tcg.frontend.dominio.Card
@@ -19,12 +20,14 @@ data class CardState(
 
 class CardViewModel(
     private val listCardExpansionUseCase: ListCardExpansionUseCase,
-    private val createCardUseCase: CreateCardUseCase
+    private val createCardUseCase: CreateCardUseCase,
+    private val createCardsBatchUseCase: CreateCardsBatchUseCase
 ): ViewModel() {
     private val _items = MutableStateFlow<List<Card>>(emptyList())
     val items = _items.asStateFlow()
 
     private val _expansionId = MutableStateFlow<Int?>(null)
+    val expansionId = _expansionId.asStateFlow()
 
     private val _state = MutableStateFlow(CardState())
     val state = _state.asStateFlow()
@@ -39,9 +42,11 @@ class CardViewModel(
 
         viewModelScope.launch {
             listCardExpansionUseCase(
-                ListCardExpansionCommand(expansionId)
-            ).onSuccess { Card ->
-                _items.value = Card
+                ListCardExpansionCommand(
+                    idExpansion = expansionId
+                )
+            ).onSuccess { cards ->
+                _items.value = cards
                 _state.update { it.copy(isLoading = false) }
             }.onFailure { error ->
                 _state.update { it.copy(isLoading = false, errorMessage = error.message) }
@@ -51,7 +56,26 @@ class CardViewModel(
 
     fun createCard(request: CreateCardRequest) {
         viewModelScope.launch {
-            createCardUseCase(request).onSuccess {
+            _state.update { it.copy(isLoading = true, errorMessage = null) }
+
+            createCardUseCase(
+                request
+            ).onSuccess {
+                refresh()
+                _state.update { it.copy(isLoading = false) }
+            }.onFailure {
+                _state.update { it.copy(errorMessage = it.errorMessage) }
+            }
+        }
+    }
+
+    fun createBatch(request: List<CreateCardRequest>) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, errorMessage = null) }
+
+            createCardsBatchUseCase(
+                request
+            ).onSuccess {
                 refresh()
                 _state.update { it.copy(isLoading = false) }
             }.onFailure {

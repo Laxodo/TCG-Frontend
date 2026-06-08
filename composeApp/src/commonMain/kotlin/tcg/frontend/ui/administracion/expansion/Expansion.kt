@@ -32,12 +32,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import tcg.frontend.dominio.Expansion
 
 @Composable
 fun Expansion(
     expansionViewModel: ExpansionViewModel,
+    onViewForm: (Expansion) -> Unit,
     onCreate: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     val items by expansionViewModel.items.collectAsState()
     val state by expansionViewModel.state.collectAsState()
@@ -105,7 +107,7 @@ fun Expansion(
                             ExpansionCard(
                                 filteredItems[item],
                                 {
-
+                                    onViewForm(filteredItems[item])
                                 }
                             )
                         }

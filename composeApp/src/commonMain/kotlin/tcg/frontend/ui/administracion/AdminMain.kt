@@ -39,10 +39,12 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import tcg.frontend.Routes
 import tcg.frontend.infraestructura.entities.expansion.CreateExpansionRequest
+import tcg.frontend.ui.administracion.card.Card
+import tcg.frontend.ui.administracion.card.CardCreate
+import tcg.frontend.ui.administracion.card.CardViewModel
 import tcg.frontend.ui.administracion.expansion.Expansion
 import tcg.frontend.ui.administracion.expansion.ExpansionViewModel
-import tcg.frontend.ui.administracion.expansion.form.ExpansionForm
-import tcg.frontend.ui.administracion.expansion.form.ExpansionFormViewModel
+import tcg.frontend.ui.administracion.expansion.ExpansionCreate
 import tcg.frontend.ui.administracion.generation.Generation
 import tcg.frontend.ui.administracion.generation.GenerationCreate
 import tcg.frontend.ui.administracion.generation.GenerationViewModel
@@ -64,7 +66,7 @@ fun AdminMain(
     val userViewModel: UserViewModel = koinViewModel()
     val generationViewModel: GenerationViewModel = koinViewModel()
     val expansionViewModel: ExpansionViewModel = koinViewModel()
-    val expansionFormViewModel: ExpansionFormViewModel = koinViewModel()
+    val cardViewModel: CardViewModel = koinViewModel()
 
     adminMainViewModel.setOptions(
         listOf(
@@ -165,7 +167,12 @@ fun AdminMain(
 
             composable(Routes.EXPANSIONS) {
                 Expansion(
-                    expansionViewModel = expansionViewModel,
+                    expansionViewModel,
+                    onViewForm = {
+                        expansionViewModel.setSelectedExpansion(it)
+                        cardViewModel.setExpansion(it.id)
+                        navController.navigate(Routes.CARDS)
+                    },
                     onCreate = {
                         navController.navigate(Routes.EXPANSION_CREATE)
                     },
@@ -176,22 +183,34 @@ fun AdminMain(
             }
 
             composable(Routes.EXPANSION_CREATE) {
-                ExpansionForm(
-                    expansionFormViewModel = expansionFormViewModel,
-                    onClose = {
-                        navController.popBackStack()
-                    },
-                    onConfirm = { state ->
-                        expansionViewModel.createExpansion(
-                            CreateExpansionRequest(
-                                id_generacion = generationViewModel.selected.value!!.id,
-                                name = state.name,
-                                price = state.price.toDouble(),
-                                year = state.year.toInt()
-                            )
-                        )
+                ExpansionCreate(
+                    expansionViewModel = expansionViewModel,
+                    generationId = expansionViewModel.generationId.value ?: return@composable,
+                    onBack = {
                         navController.popBackStack()
                     }
+                )
+            }
+
+            composable(Routes.CARDS) {
+                Card(
+                    cardViewModel = cardViewModel,
+                    onCreate = {
+                        navController.navigate(Routes.CARDS_CREATE)
+                    },
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Routes.CARDS_CREATE) {
+                val expansionId = expansionViewModel.selected.value?.id ?: return@composable
+                CardCreate(
+                    cardViewModel = cardViewModel,
+                    expansionId = expansionId,
+                    onPickImage = suspend { null },
+                    onBack = { navController.popBackStack() }
                 )
             }
         }
