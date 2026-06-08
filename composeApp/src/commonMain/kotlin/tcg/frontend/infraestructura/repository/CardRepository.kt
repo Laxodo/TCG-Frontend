@@ -17,7 +17,8 @@ import tcg.frontend.infraestructura.entities.card.GetCardsResponse
 class CardRepository(private val url: String, private val _client: HttpClient): ICardRepository {
     override suspend fun getCardsByExpansion(expansionId: ListCardExpansionCommand): Result<List<Card>> {
         return runCatching {
-            val response = _client.get("$url/generation/$expansionId/expansions")
+            val response = _client.get("$url/expansions/${expansionId.idExpansion}/cards")
+
 
             if (response.status.value !in 200..299) {
                 throw Exception("${response.status.value}-${response.status.description}")
@@ -42,7 +43,7 @@ class CardRepository(private val url: String, private val _client: HttpClient): 
 
     override suspend fun createCard(request: CreateCardRequest): Result<Unit> {
         return runCatching {
-            val response = _client.post("$url/cards") {
+            val response = _client.post("$url/cards/") {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }

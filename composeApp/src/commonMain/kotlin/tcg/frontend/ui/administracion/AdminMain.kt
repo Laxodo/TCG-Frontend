@@ -40,6 +40,7 @@ import org.koin.core.parameter.parametersOf
 import tcg.frontend.Routes
 import tcg.frontend.infraestructura.entities.expansion.CreateExpansionRequest
 import tcg.frontend.ui.administracion.card.Card
+import tcg.frontend.ui.administracion.card.CardBatchCreate
 import tcg.frontend.ui.administracion.card.CardCreate
 import tcg.frontend.ui.administracion.card.CardViewModel
 import tcg.frontend.ui.administracion.expansion.Expansion
@@ -198,6 +199,9 @@ fun AdminMain(
                     onCreate = {
                         navController.navigate(Routes.CARDS_CREATE)
                     },
+                    onCreateBatch = {
+                        navController.navigate(Routes.CARDS_BATCH_CREATE)
+                    },
                     onBack = {
                         navController.popBackStack()
                     }
@@ -211,6 +215,19 @@ fun AdminMain(
                     expansionId = expansionId,
                     onPickImage = suspend { null },
                     onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Routes.CARDS_BATCH_CREATE) {
+                val expansionId = expansionViewModel.selected.value?.id ?: return@composable
+
+                CardBatchCreate(
+                    cardViewModel = cardViewModel,
+                    expansionId = expansionId,
+                    onPickImage = suspend { null },
+                    onBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }

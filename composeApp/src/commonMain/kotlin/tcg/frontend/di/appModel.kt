@@ -52,6 +52,8 @@ import tcg.frontend.aplicacion.card.createBatch.CreateCardsBatchUseCase
 import tcg.frontend.aplicacion.expansion.listCardExpansion.ListCardExpansionUseCase
 import tcg.frontend.dominio.ICardRepository
 import tcg.frontend.infraestructura.repository.CardRepository
+import tcg.frontend.infraestructura.repository.MediaRepository
+import tcg.frontend.ui.administracion.media.MediaViewModel
 
 val appModel = module{
 
@@ -73,9 +75,10 @@ val appModel = module{
     single<IExpansionRepository> { ExpansionRepository("http://127.0.0.1:8000", get()) }
     single<IGenerationRepository> { GenerationRepository("http://127.0.0.1:8000", get()) }
     single<IMarketRepository> { MarketRepository("http://127.0.0.1:8000", get()) }
-    single<ICardRepository> { CardRepository("http://127.0.0.1:800", get()) }
+    single<ICardRepository> { CardRepository("http://127.0.0.1:8000", get()) }
     single { UserMainViewModel(get(), get()) }
     single { createHttpClient(get()) }
+    single { MediaRepository("http://127.0.0.1:8000", get()) }
 
     factory { LoginUseCase(get(), get()) }
     factory { RegisterUserCase(get()) }
@@ -102,6 +105,7 @@ val appModel = module{
     viewModel { MainViewModel(get()) }
     viewModel { CardViewModel(get(), get(), get()) }
     viewModel { UserExpansionViewModel(get()) }
+    viewModel { MediaViewModel(get()) }
     viewModel { AdminExpansionViewModel(get(), get()) }
     viewModel { GenerationViewModel(get(), get()) }
     viewModel { OpenBoosterViewModel(get(), get()) }

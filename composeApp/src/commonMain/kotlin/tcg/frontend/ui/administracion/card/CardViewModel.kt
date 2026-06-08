@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tcg.frontend.aplicacion.card.create.CreateCardUseCase
@@ -12,6 +13,7 @@ import tcg.frontend.aplicacion.expansion.listCardExpansion.ListCardExpansionComm
 import tcg.frontend.aplicacion.expansion.listCardExpansion.ListCardExpansionUseCase
 import tcg.frontend.dominio.Card
 import tcg.frontend.infraestructura.entities.card.CreateCardRequest
+import tcg.frontend.ui.register.RegisterState
 
 data class CardState(
     val isLoading: Boolean = false,
@@ -54,18 +56,19 @@ class CardViewModel(
         }
     }
 
-    fun createCard(request: CreateCardRequest) {
+    fun createCard(request: CreateCardRequest, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
-            createCardUseCase(
-                request
-            ).onSuccess {
-                refresh()
-                _state.update { it.copy(isLoading = false) }
-            }.onFailure {
-                _state.update { it.copy(errorMessage = it.errorMessage) }
-            }
+            createCardUseCase(request)
+                .onSuccess {
+                    refresh()
+                    _state.update { it.copy(isLoading = false) }
+                    onSuccess()
+                }
+                .onFailure { error ->
+                    _state.update { it.copy(isLoading = false, errorMessage = error.message) }
+                }
         }
     }
 

@@ -15,8 +15,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.dp
 fun Card(
     cardViewModel: CardViewModel,
     onCreate: () -> Unit,
+    onCreateBatch: () -> Unit,
     onBack: () -> Unit
 ) {
     val items by cardViewModel.items.collectAsState()
@@ -52,55 +55,66 @@ fun Card(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        if (state.errorMessage != null) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = state.errorMessage!!, color = MaterialTheme.colorScheme.error)
-            }
+        if (state.isLoading) {
+            CircularProgressIndicator()
         } else {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+            Column(
+                modifier = Modifier.fillMaxSize().padding(16.dp)
             ) {
-                OutlinedButton(
-                    onClick = onBack,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Undo,
-                        contentDescription = "Back",
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
-                    )
-                }
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = { searchText = it },
-                    shape = RoundedCornerShape(16.dp),
-                    placeholder = { Text("Buscar...") },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = "Search..."
-                        )
-                    },
-                    modifier = Modifier.weight(1f).padding(8.dp)
-                )
-                OutlinedButton(onClick = onCreate) {
-                    Icon(Icons.Default.Add, contentDescription = "Create")
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(
-                    minSize = 512.dp
-                )
-            ) {
-                items(filteredItems.size) { item ->
-                    CardCard(
-                        filteredItems[item],
-                        {
-
+                if (state.errorMessage != null) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = state.errorMessage!!, color = MaterialTheme.colorScheme.error)
+                    }
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = onBack,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Undo,
+                                contentDescription = "Back",
+                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                            )
                         }
-                    )
+                        OutlinedTextField(
+                            value = searchText,
+                            onValueChange = { searchText = it },
+                            shape = RoundedCornerShape(16.dp),
+                            placeholder = { Text("Buscar...") },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Default.Search,
+                                    contentDescription = "Search..."
+                                )
+                            },
+                            modifier = Modifier.weight(1f).padding(8.dp)
+                        )
+                        OutlinedButton(onClick = onCreate) {
+                            Icon(Icons.Default.Add, contentDescription = "Create")
+                        }
+                        OutlinedButton(onClick = onCreateBatch) {
+                            Icon(Icons.Default.AddCircleOutline, contentDescription = "Lote")
+                        }
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(
+                            minSize = 512.dp
+                        )
+                    ) {
+                        items(filteredItems.size) { item ->
+                            CardCard(
+                                filteredItems[item],
+                                {
+
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }

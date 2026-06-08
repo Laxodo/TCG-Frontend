@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -22,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import tcg.frontend.infraestructura.entities.card.CreateCardRequest
@@ -88,7 +90,9 @@ fun CardCreate(
 
                         result.onSuccess { url ->
                             frontcard = url
-                        }.onFailure {  }
+                        }.onFailure {
+                            println("ERROR UPLOAD FRONT: ${it.message}")
+                        }
                     }
                 }
             }
@@ -104,7 +108,9 @@ fun CardCreate(
 
                         result.onSuccess { url ->
                             backcard = url
-                        }.onFailure {  }
+                        }.onFailure {
+                            println("ERROR UPLOAD FRONT: ${it.message}")
+                        }
                     }
                 }
             }
@@ -125,8 +131,9 @@ fun CardCreate(
                             frontcard = frontcard,
                             backcard = backcard
                         )
-                    )
-                    onBack()
+                    ) {
+                        onBack()
+                    }
                 }
             ) {
                 Text("Guardar")

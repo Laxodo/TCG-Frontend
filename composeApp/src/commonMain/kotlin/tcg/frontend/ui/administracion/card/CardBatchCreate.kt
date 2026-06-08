@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.ktor.server.util.url
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import tcg.frontend.infraestructura.entities.card.CreateCardRequest
@@ -37,14 +36,14 @@ fun CardBatchCreate(
         OutlinedTextField(
             value = rarity,
             onValueChange = { rarity = it },
-            label = { Text("Rareza común") },
+            label = { Text("Rareza en común") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = price,
             onValueChange = { price = it },
-            label = { Text("Precio común") },
+            label = { Text("Precio en común") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(8.dp))
@@ -87,6 +86,20 @@ fun CardBatchCreate(
                             label = { Text("Número") }
                         )
                         Spacer(Modifier.height(8.dp))
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    onPickImage()?.let { file ->
+                                        val result = mediaViewModel.uploadImage(file.first, file.second)
+                                        result.onSuccess { path ->
+                                            cards[index] = card.copy(frontCard = path)
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            Text(if (card.frontCard.isBlank()) "Subir Frontcard" else "Imagen subida" )
+                        }
                     }
                 }
             }

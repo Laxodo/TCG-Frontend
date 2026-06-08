@@ -13,16 +13,17 @@ class MediaRepository(private val url: String, private val _client: HttpClient) 
             val response = _client.submitFormWithBinaryData(
                 url = "$url/media/upload",
                 formData = formData {
-                    append("file", bytes, Headers.build {
-                        append(
-                            HttpHeaders.ContentDisposition,
-                            "filename=$fileName"
-                        )
-                        append(
-                            HttpHeaders.ContentType,
-                            "image/png"
-                        )
-                    })
+                    append(
+                        key = "file",
+                        value = bytes,
+                        headers = Headers.build {
+                            append(
+                                HttpHeaders.ContentDisposition,
+                                "form-data; name=\"file\"; filename=\"$fileName\""
+                            )
+                            append(HttpHeaders.ContentType, "image/png")
+                        }
+                    )
                 }
             )
 

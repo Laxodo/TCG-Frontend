@@ -16,7 +16,7 @@ import tcg.frontend.infraestructura.entities.expansion.GetExpansionsResponse
 class ExpansionRepository(private val url: String, private val _client: HttpClient): IExpansionRepository {
     override suspend fun getExpansionByGeneration(generationId: ListExpansionGenerationCommand): Result<List<Expansion>> {
         return runCatching {
-            val response = _client.get("$url/generation/$generationId/expansions")
+            val response = _client.get("$url/generation/${generationId.idGeneration}/expansions")
 
             if (response.status.value !in 200 .. 299) {
                 throw Exception("${response.status.value}-${response.status.description}")
