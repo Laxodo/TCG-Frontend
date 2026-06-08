@@ -56,8 +56,8 @@ class MarketRepository(private val url: String, private val _client: HttpClient)
                     rarity = it.rarity,
                     price = it.price,
                     cardNumber = it.card_number,
-                    frontcard = it.frontcard,
-                    backcard = it.backcard
+                    frontcard = "$url${it.frontcard}",
+                    backcard = "$url${it.backcard}"
                 )
             }
         }
@@ -85,8 +85,8 @@ class MarketRepository(private val url: String, private val _client: HttpClient)
                     exchangeType = it.exchange_type,
                     price = it.price,
                     psa = it.psa,
-                    imagecardOffer = it.image_card_offer,
-                    imageCardDemanded = it.image_card_demanded,
+                    imagecardOffer = "$url${it.image_card_offer}",
+                    imageCardDemanded = "$url${it.image_card_demanded}",
                     expansionName = it.expansion_name
                 )
             }

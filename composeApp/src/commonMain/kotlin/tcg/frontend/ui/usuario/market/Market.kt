@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material3.Icon
@@ -61,19 +62,19 @@ fun Market() {
         listOf(
             ItemOption(
                 Icons.Default.Shop, {
-                    navController.navigate(Routes.EXCHANGEOFFERS){
+                    navController.navigate(Routes.SELLOFFERS){
                         launchSingleTop = true
                     }
                 },
                 "Ver ofertas de venta"
             ),
             ItemOption(
-                Icons.Default.Shop, {
-                    navController.navigate(Routes.SELLOFFERS){
+                Icons.Default.CurrencyExchange, {
+                    navController.navigate(Routes.EXCHANGEOFFERS){
                         launchSingleTop = true
                     }
                 },
-                "Ver ofertas de venta"
+                "Ver ofertas de intercambio"
             ),
             ItemOption(
                 Icons.Default.Inventory2, {

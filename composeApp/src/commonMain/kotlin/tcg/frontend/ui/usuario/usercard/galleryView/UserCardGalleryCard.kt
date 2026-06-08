@@ -58,49 +58,48 @@ fun UserCardGalleryCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ){
-                    AsyncImage(
-                        model = item.card.frontcard,
-                        contentDescription = "Image",
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = item.card.frontcard,
+                    contentDescription = "Image",
+                )
+                if (item.userCard.sold) {
+                    Icon(
+                        imageVector = Icons.Default.MonetizationOn,
+                        contentDescription = "Vendido",
+                        tint = Color(0xFF85BB65),
+                        modifier = Modifier.size(60.dp)
                     )
-                    if (item.userCard.sold){
-                        Icon(
-                            imageVector = Icons.Default.MonetizationOn,
-                            contentDescription = "Vendido",
-                            tint = Color(0xFF85BB65),
-                            modifier = Modifier.size(60.dp)
-                        )
-                    }
                 }
-                Text(
-                    text = item.card.name,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = item.userCard.psa?.toString() ?: "Sin gradear",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = item.card.rarity,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = item.card.cardNumber.toString(),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = item.userCard.price.toString() + "€",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
+            Text(
+                text = item.card.name,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = item.userCard.psa?.toString() ?: "Sin gradear",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = item.card.rarity,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = item.card.cardNumber.toString(),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = item.userCard.price.toString() + "€",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
         }
     }
 }

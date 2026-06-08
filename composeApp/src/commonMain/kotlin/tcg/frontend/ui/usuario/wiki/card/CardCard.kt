@@ -46,17 +46,15 @@ fun CardCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                AsyncImage(
-                    model = item.frontcard,
-                    contentDescription = "Image",
-                )
-                Text(
-                    text = item.rarity,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            AsyncImage(
+                model = item.frontcard,
+                contentDescription = "Image",
+            )
+            Text(
+                text = item.rarity,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

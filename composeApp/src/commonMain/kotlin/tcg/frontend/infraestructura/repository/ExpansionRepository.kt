@@ -50,8 +50,8 @@ class ExpansionRepository(private val url: String, private val _client: HttpClie
                     rarity = it.rarity,
                     price = it.price,
                     cardNumber = it.card_number,
-                    frontcard = it.frontcard,
-                    backcard = it.backcard
+                    frontcard = "$url${it.frontcard}",
+                    backcard = "$url${it.backcard}"
                 )
             }
         }

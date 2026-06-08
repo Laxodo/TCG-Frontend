@@ -57,28 +57,28 @@ fun LogHistoryUserResponse.toDomain() = LogHistoryUser(
     isAdmin = is_admin
 )
 
-fun LogActivityCardResponse.toDomain() = LogActivityCard(
+fun LogActivityCardResponse.toDomain(url: String) = LogActivityCard(
     id = id,
     name = name,
     price = price,
-    frontcard = frontcard
+    frontcard = "$url$frontcard"
 )
 
-fun LogActivityResponse.toDomain() = LogActivity(
+fun LogActivityResponse.toDomain(url: String) = LogActivity(
     idUser = id_user,
-    card = card?.toDomain(),
+    card = card?.toDomain(url),
     idLogHistory = id_log_history,
     action = action,
     price = price,
     psa = psa
 )
 
-fun LogHistoryResponse.toDomain() = LogHistory(
+fun LogHistoryResponse.toDomain(url: String) = LogHistory(
     user = user.toDomain(),
     userInteracted = user_interacted?.toDomain(),
     descripcion = description,
     type = type,
     moneyExchange = money_exchange,
     date = date,
-    activities = activities.map { it.toDomain() }
+    activities = activities.map { it.toDomain(url) }
 )

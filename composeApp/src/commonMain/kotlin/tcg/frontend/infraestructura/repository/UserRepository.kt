@@ -160,8 +160,8 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
                     rarity = it.card.rarity,
                     price = it.card.price,
                     cardNumber = it.card.card_number,
-                    frontcard = it.card.frontcard,
-                    backcard = it.card.backcard
+                    frontcard = "$url${it.card.frontcard}",
+                    backcard = "$url${it.card.backcard}"
                 )
                 val userCards = it.user_cards.map { it ->
                     UserCard(
@@ -196,7 +196,7 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
                     cardNumber = it.card_number,
                     cardName = it.card_name,
                     quantity = it.quantity,
-                    frontcard = it.frontcard
+                    frontcard = "$url${it.frontcard}"
                 )
             }
         }
@@ -212,7 +212,7 @@ class UserRepository(private val url: String, private val _client: HttpClient) :
             println("JSON REAL RECIBIDO: $responseString")
 
             LogHistoryPagination(
-                items = item.items.map { it.toDomain() },
+                items = item.items.map { it.toDomain(url) },
                 total = item.total,
                 page = item.page,
                 size = item.size,

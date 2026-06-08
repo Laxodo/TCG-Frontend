@@ -115,7 +115,7 @@ fun SellOffers(
                 }else{
                     Text(
                         color = MaterialTheme.colorScheme.onSurface,
-                        text = "No hay ofertas de cartas.",
+                        text = "No hay ofertas de venta.",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 24.sp)
                     )
                 }

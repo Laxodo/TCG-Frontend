@@ -63,7 +63,7 @@ fun OpenBoosterCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = item.price.toString(),
+                    text = "${item.price}€",
                     style = MaterialTheme.typography.titleLarge,
                     color = if (enoughtMoney) Color.Green else Color.Red
                 )

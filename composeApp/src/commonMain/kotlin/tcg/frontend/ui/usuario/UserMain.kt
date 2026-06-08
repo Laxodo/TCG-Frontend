@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Euro
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.West
 import androidx.compose.material3.Icon
@@ -65,6 +66,7 @@ import tcg.frontend.ui.usuario.wiki.card.CardViewModel
 import tcg.frontend.ui.usuario.wiki.card.detail.CardDetail
 import tcg.frontend.ui.usuario.wiki.generation.Generation
 import tcg.frontend.ui.usuario.wiki.generation.GenerationViewModel
+import kotlin.math.exp
 
 @Composable
 fun UserMain(
@@ -88,7 +90,7 @@ fun UserMain(
     userMainViewModel.setOptions(
         listOf(
             ItemOption(
-                Icons.Default.Euro, {
+                Icons.Default.Public, {
                     navController.navigate(Routes.GENERATION){
                         launchSingleTop = true
                     }
@@ -105,6 +107,7 @@ fun UserMain(
             ),
             ItemOption(
                 Icons.Default.AttachMoney, {
+                    expansionViewModel.refresh()
                     navController.navigate(Routes.OPENBOOSTER){
                         launchSingleTop = true
                     }
@@ -113,6 +116,7 @@ fun UserMain(
             ),
             ItemOption(
                 Icons.Default.Inventory2, {
+                    expansionViewModel.refresh()
                     navController.navigate(Routes.EXPANSIONS){
                         launchSingleTop = true
                     }
